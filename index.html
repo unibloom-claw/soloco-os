@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Soloco Pitch Deck</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-deep: #0a0e14;
+      --bg-mid: #0d1117;
+      --surface: rgba(22, 27, 34, 0.65);
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+      --accent: #e8a54b;
+      --accent-soft: rgba(232, 165, 75, 0.14);
+      --accent-glow: rgba(232, 165, 75, 0.35);
+      --blue-term: #79c0ff;
+      --slide-pad: clamp(2.5rem, 5vw, 4rem);
+      --transition: 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; overflow: hidden; }
+    body {
+      font-family: "Noto Sans SC", "DM Sans", system-ui, sans-serif;
+      background: radial-gradient(120% 100% at 80% 0%, #141a24 0%, var(--bg-deep) 45%, #050608 100%);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .deck {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      max-width: min(1280px, 100vw);
+      margin: 0 auto;
+      padding: var(--slide-pad);
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: center;
+    }
+
+    /* Timer */
+    .timer-wrap {
+      position: fixed;
+      top: clamp(1rem, 3vw, 1.75rem);
+      right: clamp(1rem, 3vw, 1.75rem);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      font-family: "DM Sans", "Noto Sans SC", sans-serif;
+      font-variant-numeric: tabular-nums;
+      cursor: pointer;
+      user-select: none;
+      padding: 0.45rem 0.85rem;
+      border-radius: 999px;
+      background: var(--surface);
+      border: 1px solid rgba(232, 165, 75, 0.22);
+      backdrop-filter: blur(10px);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .timer-wrap:hover { border-color: rgba(232, 165, 75, 0.45); box-shadow: 0 0 24px var(--accent-glow); }
+    .timer-label { font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); }
+    .timer-display { font-size: 1.35rem; font-weight: 700; color: var(--accent); min-width: 4.2ch; text-align: right; }
+    .timer-bar { width: 72px; height: 4px; border-radius: 2px; background: rgba(255, 255, 255, 0.08); overflow: hidden; }
+    .timer-bar-fill { height: 100%; width: 100%; background: linear-gradient(90deg, var(--accent), #f4c47a); border-radius: 2px; transform-origin: left center; transition: transform 0.25s linear; }
+    .timer-wrap.paused .timer-bar-fill { transition: none; }
+
+    /* Slide chrome */
+    .slide-meta {
+      position: fixed;
+      bottom: clamp(1rem, 3vw, 1.75rem);
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-variant-numeric: tabular-nums;
+    }
+    .slide-meta kbd { font-family: inherit; font-size: 0.75rem; padding: 0.15rem 0.45rem; border-radius: 4px; background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.08); }
+
+    /* Slides */
+    .slides { position: relative; flex: 1; min-height: 0; display: grid; place-items: center; }
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateX(28px);
+      transition: opacity var(--transition), transform var(--transition), visibility 0s linear 0.55s;
+      pointer-events: none;
+    }
+    .slide.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(0);
+      transition: opacity var(--transition), transform var(--transition), visibility 0s;
+      pointer-events: auto;
+    }
+    .slide.prev { transform: translateX(-28px); }
+    .slide-inner { width: 100%; max-width: 960px; margin: 0 auto; }
+    .slide-tag {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      opacity: 0;
+      transform: translateY(12px);
+      animation: rise 0.7s var(--transition) forwards;
+      animation-delay: 0.05s;
+    }
+    .slide h1 {
+      font-family: "DM Sans", "Noto Sans SC", sans-serif;
+      font-size: clamp(2.1rem, 4.2vw, 3.25rem);
+      font-weight: 700;
+      line-height: 1.12;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.25rem;
+      background: linear-gradient(135deg, #fff 0%, #c9d1d9 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      opacity: 0;
+      transform: translateY(16px);
+      animation: rise 0.75s var(--transition) forwards;
+      animation-delay: 0.1s;
+    }
+    .slide h2 {
+      font-family: "DM Sans", "Noto Sans SC", sans-serif;
+      font-size: clamp(1.65rem, 3vw, 2.35rem);
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      transform: translateY(14px);
+      animation: rise 0.75s var(--transition) forwards;
+      animation-delay: 0.08s;
+    }
+    .slide p, .slide li { font-size: clamp(1rem, 1.55vw, 1.2rem); line-height: 1.65; color: var(--text-muted); opacity: 0; transform: translateY(12px); animation: rise 0.7s var(--transition) forwards; }
+    .slide p + p { margin-top: 0.85rem; }
+    .slide ul { list-style: none; margin-top: 0.5rem; }
+    .slide li { position: relative; padding-left: 1.35rem; margin-bottom: 0.75rem; animation-delay: calc(0.12s + var(--i, 0) * 0.06s); }
+    .slide li::before { content: ""; position: absolute; left: 0; top: 0.55em; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 10px var(--accent-glow); }
+    .term-en { font-family: "DM Sans", sans-serif; font-weight: 600; font-style: italic; color: var(--blue-term); }
+    strong, .hl { color: var(--text); font-weight: 600; }
+    .accent { color: var(--accent); }
+    .big-stat { font-family: "DM Sans", "Noto Sans SC", sans-serif; font-weight: 700; font-size: clamp(2rem, 4vw, 3rem); color: var(--accent); line-height: 1; text-shadow: 0 0 40px var(--accent-glow); }
+    .subline { font-size: 0.95rem; color: var(--text-muted); margin-top: 0.35rem; }
+
+    /* Layout Components */
+    .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(1rem, 2vw, 1.5rem); margin-top: 1.75rem; }
+    @media (max-width: 720px) { .stat-grid { grid-template-columns: 1fr; } }
+    .stat-card { padding: 1.25rem 1.35rem; border-radius: 14px; background: linear-gradient(165deg, rgba(22, 27, 34, 0.9) 0%, rgba(13, 17, 23, 0.5) 100%); border: 1px solid rgba(255, 255, 255, 0.06); opacity: 0; transform: translateY(16px); animation: rise 0.75s var(--transition) forwards; }
+    .stat-card .label { font-size: 0.78rem; letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 0.65rem; }
+    .bar-track { height: 10px; border-radius: 5px; background: rgba(255, 255, 255, 0.06); overflow: hidden; margin: 0.5rem 0 0.35rem; }
+    .bar-fill { width: 0%; height: 100%; border-radius: 5px; background: linear-gradient(90deg, #c97a2d, var(--accent)); transition: width 1.1s cubic-bezier(0.22, 1, 0.36, 1); }
+    .money-callout { margin-top: 1.5rem; padding: 1rem 1.25rem; border-radius: 12px; background: var(--accent-soft); border: 1px solid rgba(232, 165, 75, 0.28); opacity: 0; transform: translateY(12px); animation: rise 0.75s var(--transition) forwards; animation-delay: 0.45s; }
+    .pill-row { display: flex; flex-wrap: wrap; gap: 0.65rem; margin: 1.25rem 0 0.5rem; }
+    .pill { font-size: 0.82rem; padding: 0.35rem 0.75rem; border-radius: 999px; background: rgba(121, 192, 255, 0.1); color: var(--blue-term); border: 1px solid rgba(121, 192, 255, 0.22); opacity: 0; transform: translateY(10px); animation: rise 0.65s var(--transition) forwards; }
+    .dual-stat { display: flex; flex-wrap: wrap; align-items: baseline; gap: 1.5rem 2rem; margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid rgba(255, 255, 255, 0.06); }
+    .dual-stat > div { opacity: 0; animation: rise 0.7s var(--transition) forwards; }
+    .table-wrap { margin-top: 1rem; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.08); opacity: 0; animation: rise 0.75s var(--transition) forwards; animation-delay: 0.12s; }
+    table { width: 100%; border-collapse: collapse; font-size: clamp(0.85rem, 1.2vw, 0.98rem); }
+    th, td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid rgba(255, 255, 255, 0.06); }
+    th { background: rgba(232, 165, 75, 0.08); color: var(--accent); font-weight: 600; font-size: 0.8rem; letter-spacing: 0.04em; }
+
+    @keyframes rise { to { opacity: 1; transform: translateY(0); } }
+    .slide.active .slide-tag, .slide.active h1, .slide.active h2, .slide.active p, .slide.active li { animation-fill-mode: forwards; }
+    .slide:not(.active) .slide-tag, .slide:not(.active) h1, .slide:not(.active) h2, .slide:not(.active) p, .slide:not(.active) li, .slide:not(.active) .stat-card, .slide:not(.active) .money-callout, .slide:not(.active) .pill, .slide:not(.active) .dual-stat > div, .slide:not(.active) .table-wrap { animation: none; opacity: 0; }
+  </style>
+</head>
+<body>
+  <div class="timer-wrap paused" id="timer" role="button" tabindex="0" aria-label="Timer: Click or press T to start/pause, 10 min countdown" title="Click or press T to start/pause">
+    <div>
+      <div class="timer-label">10 min</div>
+      <div class="timer-display" id="timerText">10:00</div>
+    </div>
+    <div class="timer-bar" aria-hidden="true">
+      <div class="timer-bar-fill" id="timerFill"></div>
+    </div>
+  </div>
+
+  <div class="deck">
+    <div class="slides" id="slides">
+      
+      <!-- Slide 1: Title -->
+      <section class="slide active">
+        <div class="slide-inner">
+          <span class="slide-tag">Pitch Deck · 10 Min</span>
+          <h1>Soloco</h1>
+          <p>一个人部署并治理一家 <strong class="accent">AI 原生公司</strong>。</p>
+          <p class="pill-row">
+            <span class="pill">One Person Company</span>
+            <span class="pill">AI-Native</span>
+            <span class="pill">OS for AI Orgs</span>
+          </p>
+        </div>
+      </section>
+
+      <!-- Slide 2: The Shift -->
+      <section class="slide">
+        <div class="slide-inner">
+          <span class="slide-tag">01 · The Shift</span>
+          <h2>从“个人助手”到“组织执行力”</h2>
+          <p>过去十年，软件一直在帮人提高效率。但 2025 之后，AI 模型越过了一个关键门槛：</p>
+          <ul>
+            <li style="--i: 0">不再只是回答问题，而是<strong class="accent">持续执行任务</strong></li>
+            <li style="--i: 1">能够调用工具并<strong class="accent">跨系统协作</strong></li>
+            <li style="--i: 2">AI 的核心价值正在发生转移</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Slide 3: The Problem -->
+      <section class="slide">
+        <div class="slide-inner">
+          <span class="slide-tag">02 · The Problem</span>
+          <h2>我们有最强的工具，却缺组织容器</h2>
+          <p>真正限制个人创业者和小团队的，不是任务做得不够快，而是无法低成本拥有一套<strong class="accent">完整的组织能力</strong>。</p>
+          <div class="dual-stat">
+            <div>
+              <div class="subline">传统方式的本质</div>
+              <div><span class="hl">购买组织结构</span></div>
+            </div>
+            <div>
+              <div class="subline">当前痛点</div>
+              <div><span class="hl">昂贵、缓慢、高度依赖人力</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Slide 4: The Insight & Product -->
+      <section class="slide">
+        <div class="slide-inner">
+          <span class="slide-tag">03 · The Product</span>
+          <h2>Soloco：把“公司”软件化</h2>
+          <p>输入目标后，Soloco 启动一组具备不同职责的 <span class="term-en">AI workers</span>。它们不是聊天线程，而是持续的组织实体。</p>
+          <ul>
+            <li style="--i: 0"><strong class="accent">角色分工：</strong> 研究、销售、工程、风控</li>
+            <li style="--i: 1"><strong class="accent">后台推进：</strong> 用户离线时，AI 团队持续执行</li>
+            <li style="--i: 2"><strong class="accent">人类治理：</strong> 处理异常、批准关键决策</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Slide 5: The Category -->
+      <section class="slide">
+        <div class="slide-inner">
+          <span class="slide-tag">04 · The Category</span>
+          <h2>OPC: One Person Company</h2>
+          <p>OPC 不是“一个人用了很多 AI 工具”，而是拥有一套可运行、可治理、可扩张的 <strong class="accent">AI 组织系统</strong>。</p>
+          <div class="stat-grid">
+            <div class="stat-card">
+              <div class="label"><span class="term-en">Scale</span> · 规模</div>
+              <div class="big-stat">1:100</div>
+              <div class="subline">一个人可有效负责上百个 AI 员工</div>
+              <div class="bar-track"><div class="bar-fill" data-width="100"></div></div>
+            </div>
+            <div class="stat-card">
+              <div class="label"><span class="term-en">Friction</span> · 摩擦</div>
+              <div class="big-stat">~0</div>
+              <div class="subline">上下文、记忆与状态结构化挂载</div>
+              <div class="bar-track"><div class="bar-fill" data-width="5"></div></div>
+            </div>
+            <div class="stat-card">
+              <div class="label"><span class="term-en">Trust</span> · 信任</div>
+              <div class="big-stat">100%</div>
+              <div class="subline">行为完全可记录、可审计、可约束</div>
+              <div class="bar-track"><div class="bar-fill" data-width="100"></div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Slide 6: The Long-Term Vision -->
+      <section class="slide">
+        <div class="slide-inner">
+          <span class="slide-tag">05 · The Vision</span>
+          <h2>可组合的 AI 组织网络</h2>
+          <p>当 AI 组织可以互相协作、分包、嵌套时，一种<strong class="accent">全新的经济主体形态</strong>将出现。</p>
+          <ul>
+            <li style="--i: 0">不是传统公司，不是平台，也不是 DAO</li>
+            <li style="--i: 1">节点之间不依赖合同谈判，而依赖<strong class="accent">协议与权限</strong></li>
+            <li style="--i: 2">Soloco 是让这一切得以存在的基础设施</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Slide 7: Why Now & The Ask -->
+      <section class="slide">
+        <div class="slide-inner">
+          <span class="slide-tag">06 · Why Now & The Ask</span>
+          <h2>定义下一个软件类别</h2>
+          <p>模型能力刚越过可信执行门槛，“组织结构软件化”仍是蓝海。未来 6-12 个月将决定谁来定义这个类别。</p>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>过去 <span class="term-en">Past</span></th><th>未来 <span class="term-en">Future</span></th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Productivity Software</td><td><strong class="accent">Organization Software</strong></td></tr>
+                <tr><td>AI Assistant</td><td><strong class="accent">AI Company</strong></td></tr>
+                <tr><td>One-Person Team</td><td><strong class="accent">One-Person Company (OPC)</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <div class="slide-meta">
+    <span id="slideNum">1 / 7</span>
+    <span><kbd>←</kbd> <kbd>→</kbd> Navigation</span>
+    <span><kbd>T</kbd> Timer</span>
+  </div>
+
+  <script>
+    (function () {
+      var slides = Array.prototype.slice.call(document.querySelectorAll(".slide"));
+      var total = slides.length;
+      var current = 0;
+      var timerEl = document.getElementById("timer");
+      var timerText = document.getElementById("timerText");
+      var timerFill = document.getElementById("timerFill");
+      var slideNum = document.getElementById("slideNum");
+
+      var TOTAL_SEC = 600; // 10 minutes
+      var remaining = TOTAL_SEC;
+      var intervalId = null;
+      var running = false;
+
+      function formatTime(sec) {
+        var m = Math.floor(sec / 60);
+        var s = sec % 60;
+        return m + ":" + (s < 10 ? "0" : "") + s;
+      }
+
+      function updateTimerDisplay() {
+        timerText.textContent = formatTime(remaining);
+        var p = remaining / TOTAL_SEC;
+        timerFill.style.transform = "scaleX(" + p + ")";
+      }
+
+      function tick() {
+        if (remaining <= 0) { stopTimer(); return; }
+        remaining--;
+        updateTimerDisplay();
+        if (remaining <= 0) stopTimer();
+      }
+
+      function startTimer() {
+        if (intervalId) return;
+        running = true;
+        timerEl.classList.remove("paused");
+        intervalId = setInterval(tick, 1000);
+      }
+
+      function stopTimer() {
+        running = false;
+        timerEl.classList.add("paused");
+        if (intervalId) { clearInterval(intervalId); intervalId = null; }
+      }
+
+      function toggleTimer() {
+        if (running) { stopTimer(); } else { if (remaining <= 0) remaining = TOTAL_SEC; updateTimerDisplay(); startTimer(); }
+      }
+
+      function showSlide(index) {
+        if (index < 0) index = 0;
+        if (index >= total) index = total - 1;
+        current = index;
+        slides.forEach(function (slide, i) {
+          slide.classList.remove("active", "prev");
+          if (i === current) {
+            slide.classList.add("active");
+            slide.setAttribute("aria-hidden", "false");
+          } else {
+            slide.setAttribute("aria-hidden", "true");
+            if (i < current) slide.classList.add("prev");
+          }
+        });
+        slideNum.textContent = current + 1 + " / " + total;
+
+        if (current === 4) { // Slide 5 (index 4) has the stat bar animation
+          requestAnimationFrame(function () {
+            document.querySelectorAll(".bar-fill[data-width]").forEach(function (bar) {
+              var w = bar.getAttribute("data-width");
+              bar.style.width = "0%";
+              requestAnimationFrame(function () { bar.style.width = w + "%"; });
+            });
+          });
+        } else {
+          document.querySelectorAll(".bar-fill[data-width]").forEach(function (bar) { bar.style.width = "0%"; });
+        }
+      }
+
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "ArrowRight" || e.key === " " || e.key === "PageDown") { e.preventDefault(); showSlide(current + 1); }
+        else if (e.key === "ArrowLeft" || e.key === "PageUp") { e.preventDefault(); showSlide(current - 1); }
+        else if (e.key === "t" || e.key === "T") { e.preventDefault(); toggleTimer(); }
+      });
+
+      timerEl.addEventListener("click", function (e) { e.preventDefault(); toggleTimer(); });
+      updateTimerDisplay();
+      showSlide(0);
+    })();
+  </script>
+</body>
+</html>

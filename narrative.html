@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Soloco: 融资 Deck 叙事文稿</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-color: #0d1117;
+      --text-main: #c9d1d9;
+      --text-muted: #8b949e;
+      --heading-color: #e6edf3;
+      --accent: #e8a54b;
+      --border-color: #30363d;
+    }
+
+    body {
+      font-family: "Noto Sans SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      line-height: 1.7;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 4rem 2rem;
+    }
+
+    header {
+      margin-bottom: 4rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 2rem;
+    }
+
+    h1 {
+      color: var(--heading-color);
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+
+    .subtitle {
+      color: var(--accent);
+      font-size: 1.2rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+    }
+
+    section {
+      margin-bottom: 3.5rem;
+    }
+
+    h2 {
+      color: var(--heading-color);
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-top: 0;
+      margin-bottom: 1.2rem;
+      display: flex;
+      align-items: baseline;
+      gap: 0.75rem;
+    }
+
+    h2 .section-num {
+      color: var(--accent);
+      font-size: 1.1rem;
+      font-weight: 700;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    p {
+      margin-top: 0;
+      margin-bottom: 1.2rem;
+      font-size: 1.05rem;
+    }
+
+    ul {
+      margin-top: 0;
+      margin-bottom: 1.5rem;
+      padding-left: 1.5rem;
+    }
+
+    li {
+      margin-bottom: 0.5rem;
+      font-size: 1.05rem;
+    }
+
+    strong {
+      color: var(--heading-color);
+      font-weight: 600;
+    }
+
+    .highlight {
+      color: var(--accent);
+    }
+
+    blockquote {
+      margin: 2rem 0;
+      padding: 1.5rem;
+      background: rgba(232, 165, 75, 0.05);
+      border-left: 4px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+    }
+
+    blockquote p:last-child {
+      margin-bottom: 0;
+    }
+
+    .footer {
+      margin-top: 5rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border-color);
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Soloco</h1>
+      <div class="subtitle">融资 Deck 叙事文稿 (Narrative Script)</div>
+    </header>
+
+    <main>
+      <section>
+        <h2><span class="section-num">01</span> The Shift</h2>
+        <p>过去十年，软件一直在帮人提高效率。</p>
+        <p>但 2025 之后，AI 模型开始越过一个关键门槛：它们不再只是回答问题，而是可以<strong>持续执行任务、调用工具、协作交付结果</strong>。</p>
+        <p>这意味着，AI 的核心价值正在从“个人助手”转向“<span class="highlight">组织执行力</span>”。</p>
+      </section>
+
+      <section>
+        <h2><span class="section-num">02</span> The Problem</h2>
+        <p>但今天市场上的产品仍然停留在工具范式里。</p>
+        <p>我们有更强的 agent、更快的 coding assistant、更聪明的 workflow automation，但它们大多解决的是单点任务。真正限制个人创业者和小团队的，不是某一个任务做得不够快，而是他们<strong>无法低成本拥有一套完整的组织能力</strong>。</p>
+        <p>雇人、外包、购买 SaaS，本质上都是在购买组织结构：角色分工、流程、记忆、监督、决策和责任边界。</p>
+        <p>今天，这套组织结构仍然昂贵、缓慢，而且高度依赖人力。</p>
+      </section>
+
+      <section>
+        <h2><span class="section-num">03</span> The Insight</h2>
+        <p>AI 时代真正需要被重做的，不是某个工具，而是<strong>组织结构本身</strong>。</p>
+        <p>当 AI 能够承担执行工作，人类的角色会从“亲自管理任务”转向“<span class="highlight">治理一个系统</span>”：设定目标、定义边界、批准关键决策、处理异常情况。</p>
+        <p>未来，一个人不需要雇佣一家公司，也可以部署一家公司。</p>
+      </section>
+
+      <section>
+        <h2><span class="section-num">04</span> The Product</h2>
+        <p>Soloco 让一个人部署并治理一家 AI 原生公司。</p>
+        <p>用户输入目标后，Soloco 会启动一组具备不同职责的 AI workers：研究、销售、内容、工程、运营、财务、风控。它们不是一次性的聊天线程，而是<strong>有角色、有记忆、有任务队列、有协作流程、有审计记录的持续组织实体</strong>。</p>
+        <p>用户不需要一直在线。<br>AI 组织在后台推进执行；当遇到风险、资源分配或战略选择时，再把决策交还给人。</p>
+      </section>
+
+      <section>
+        <h2><span class="section-num">05</span> The Category</h2>
+        <p>我们称这个新形态为 <strong>OPC：One Person Company</strong>。</p>
+        <p>OPC 不是“一个人用了很多 AI 工具”。<br>OPC 是一个人拥有一套可运行、可治理、可扩张的 AI 组织系统。</p>
+        <p>它让个人创业者、小型 agency、独立顾问和创作者拥有过去只有公司才能承担的组织能力。</p>
+      </section>
+
+      <section>
+        <h2><span class="section-num">06</span> Why AI Organizations Are Different</h2>
+        <p>AI 组织和传统组织有两个根本不同。</p>
+        <ul>
+          <li><strong>第一，信息摩擦趋近于零。</strong><br>传统公司里，大量管理成本来自同步上下文、交接任务、解释背景。但在 AI 组织里，任务、记忆、文件、状态和决策历史都可以结构化挂载。</li>
+          <li><strong>第二，信任可以被治理系统替代。</strong><br>传统组织依赖个人信任和管理经验；AI workers 的行为则可以被记录、审计、回放、约束和评估。</li>
+        </ul>
+        <p>所以人类不再需要逐个“管理下属”，而是治理一套可观测的执行系统。</p>
+      </section>
+
+      <section>
+        <h2><span class="section-num">07</span> The Long-Term Vision</h2>
+        <p>OPC 只是第一步。</p>
+        <p>当 AI 组织可以互相协作、分包、嵌套和组合时，一个新的经济网络会出现。每个节点都可以由一个人部署，但节点之间的协作不依赖传统雇佣、合同谈判或个人信任，而依赖<strong>协议、权限、审计和结算机制</strong>。</p>
+        <p>这不是传统公司，不是平台，也不是 DAO。<br>这是<span class="highlight">可组合的 AI 组织网络</span>。</p>
+      </section>
+
+      <section>
+        <h2><span class="section-num">08</span> Why Soloco</h2>
+        <p>Soloco 不是这个网络里的一个 AI 组织。<br>Soloco 是让 AI 组织被创建、运行、治理和扩张的<strong>基础设施</strong>。</p>
+        <p>就像 AWS 把计算能力变成可部署资源，Soloco 要把组织能力变成可部署资源。</p>
+        <p>我们的长期目标是成为 AI 组织的 operating system。</p>
+      </section>
+
+      <section>
+        <h2><span class="section-num">09</span> Why Now</h2>
+        <p>这个机会窗口刚刚打开。</p>
+        <p>模型能力已经开始越过可信执行的门槛，多 agent 协作、长期记忆、工具调用和自动化工作流都已经具备基础条件。与此同时，大厂和主流 AI 产品仍然主要围绕 assistant、agent、copilot 和 workflow automation 展开竞争。</p>
+        <p>“组织结构软件化”还没有被定义。</p>
+        <p>未来 6 到 12 个月，会决定这个类别由谁命名、由谁占据入口、由谁沉淀执行数据和组织协议。</p>
+      </section>
+
+      <section>
+        <h2><span class="section-num">10</span> The Ask</h2>
+        <p>Soloco 正在构建 <strong>AI-native organization layer</strong>：让一个人可以部署、治理并扩张一家 AI 公司。</p>
+        <p>我们寻找的不是短期工具机会，而是一个新的软件类别：</p>
+        <blockquote>
+          <p>从 productivity software，到 <strong>organization software</strong>。<br>
+          从 AI assistant，到 <strong>AI company</strong>。<br>
+          从 one-person team，到 <strong>one-person company</strong>。</p>
+        </blockquote>
+      </section>
+    </main>
+
+    <footer class="footer">
+      &copy; 2026 Soloco. All rights reserved.
+    </footer>
+  </div>
+</body>
+</html>
