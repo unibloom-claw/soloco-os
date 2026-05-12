@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Soloco Pitch v4 · AI 组织的操作系统</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-deep: #0a0e14;
+      --bg-mid: #0d1117;
+      --surface: rgba(22, 27, 34, 0.65);
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+      --accent: #e8a54b;
+      --accent-soft: rgba(232, 165, 75, 0.14);
+      --accent-glow: rgba(232, 165, 75, 0.35);
+      --blue-term: #79c0ff;
+      --slide-pad: clamp(2.5rem, 5vw, 4rem);
+      --transition: 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; overflow: hidden; }
+    body {
+      font-family: "Noto Sans SC", "DM Sans", system-ui, sans-serif;
+      background: radial-gradient(120% 100% at 80% 0%, #141a24 0%, var(--bg-deep) 45%, #050608 100%);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .deck {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      max-width: min(1280px, 100vw);
+      margin: 0 auto;
+      padding: var(--slide-pad);
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: center;
+    }
+
+    .timer-wrap {
+      position: fixed;
+      top: clamp(1rem, 3vw, 1.75rem);
+      right: clamp(1rem, 3vw, 1.75rem);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      font-family: "DM Sans", "Noto Sans SC", sans-serif;
+      font-variant-numeric: tabular-nums;
+      cursor: pointer;
+      user-select: none;
+      padding: 0.45rem 0.85rem;
+      border-radius: 999px;
+      background: var(--surface);
+      border: 1px solid rgba(232, 165, 75, 0.22);
+      backdrop-filter: blur(10px);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .timer-wrap:hover { border-color: rgba(232, 165, 75, 0.45); box-shadow: 0 0 24px var(--accent-glow); }
+    .timer-label { font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); }
+    .timer-display { font-size: 1.35rem; font-weight: 700; color: var(--accent); min-width: 4.2ch; text-align: right; }
+    .timer-bar { width: 72px; height: 4px; border-radius: 2px; background: rgba(255, 255, 255, 0.08); overflow: hidden; }
+    .timer-bar-fill { height: 100%; width: 100%; background: linear-gradient(90deg, var(--accent), #f4c47a); border-radius: 2px; transform-origin: left center; transition: transform 0.25s linear; }
+    .timer-wrap.paused .timer-bar-fill { transition: none; }
+
+    .slide-meta {
+      position: fixed;
+      bottom: clamp(1rem, 3vw, 1.75rem);
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-variant-numeric: tabular-nums;
+    }
+    .slide-meta kbd { font-family: inherit; font-size: 0.75rem; padding: 0.15rem 0.45rem; border-radius: 4px; background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.08); }
+
+    .slides { position: relative; flex: 1; min-height: 0; display: grid; place-items: center; }
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateX(28px);
+      transition: opacity var(--transition), transform var(--transition), visibility 0s linear 0.55s;
+      pointer-events: none;
+    }
+    .slide.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(0);
+      transition: opacity var(--transition), transform var(--transition), visibility 0s;
+      pointer-events: auto;
+    }
+    .slide.prev { transform: translateX(-28px); }
+    .slide-inner { width: 100%; max-width: 960px; margin: 0 auto; }
+    .slide-tag {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      opacity: 0;
+      transform: translateY(12px);
+      animation: rise 0.7s var(--transition) forwards;
+      animation-delay: 0.05s;
+    }
+    .slide h1 {
+      font-family: "DM Sans", "Noto Sans SC", sans-serif;
+      font-size: clamp(2.1rem, 4.2vw, 3.25rem);
+      font-weight: 700;
+      line-height: 1.12;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.25rem;
+      background: linear-gradient(135deg, #fff 0%, #c9d1d9 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      opacity: 0;
+      transform: translateY(16px);
+      animation: rise 0.75s var(--transition) forwards;
+      animation-delay: 0.1s;
+    }
+    .slide h2 {
+      font-family: "DM Sans", "Noto Sans SC", sans-serif;
+      font-size: clamp(1.55rem, 2.8vw, 2.2rem);
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 1.25rem;
+      opacity: 0;
+      transform: translateY(14px);
+      animation: rise 0.75s var(--transition) forwards;
+      animation-delay: 0.08s;
+    }
+    .slide p, .slide li { font-size: clamp(0.98rem, 1.45vw, 1.15rem); line-height: 1.6; color: var(--text-muted); opacity: 0; transform: translateY(12px); animation: rise 0.7s var(--transition) forwards; }
+    .slide p + p { margin-top: 0.75rem; }
+    .slide ul { list-style: none; margin-top: 0.5rem; }
+    .slide li { position: relative; padding-left: 1.35rem; margin-bottom: 0.65rem; animation-delay: calc(0.12s + var(--i, 0) * 0.06s); }
+    .slide li::before { content: ""; position: absolute; left: 0; top: 0.55em; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 10px var(--accent-glow); }
+    .term-en { font-family: "DM Sans", sans-serif; font-weight: 600; font-style: italic; color: var(--blue-term); }
+    strong, .hl { color: var(--text); font-weight: 600; }
+    .accent { color: var(--accent); }
+    .big-stat { font-family: "DM Sans", "Noto Sans SC", sans-serif; font-weight: 700; font-size: clamp(2rem, 4vw, 3rem); color: var(--accent); line-height: 1; text-shadow: 0 0 40px var(--accent-glow); }
+    .subline { font-size: 0.92rem; color: var(--text-muted); margin-top: 0.35rem; }
+
+    .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(1rem, 2vw, 1.5rem); margin-top: 1.5rem; }
+    @media (max-width: 720px) { .stat-grid { grid-template-columns: 1fr; } }
+    .stat-card { padding: 1.15rem 1.25rem; border-radius: 14px; background: linear-gradient(165deg, rgba(22, 27, 34, 0.9) 0%, rgba(13, 17, 23, 0.5) 100%); border: 1px solid rgba(255, 255, 255, 0.06); opacity: 0; transform: translateY(16px); animation: rise 0.75s var(--transition) forwards; }
+    .stat-card .label { font-size: 0.78rem; letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 0.55rem; }
+    .stat-card .pillar-title { font-size: 1.15rem; font-weight: 700; color: var(--text); margin-bottom: 0.5rem; }
+    .stat-card .pillar-body { font-size: 0.92rem; color: var(--text-muted); line-height: 1.5; }
+    .bar-track { height: 10px; border-radius: 5px; background: rgba(255, 255, 255, 0.06); overflow: hidden; margin: 0.5rem 0 0.35rem; }
+    .bar-fill { width: 0%; height: 100%; border-radius: 5px; background: linear-gradient(90deg, #c97a2d, var(--accent)); transition: width 1.1s cubic-bezier(0.22, 1, 0.36, 1); }
+    .money-callout { margin-top: 1.25rem; padding: 1rem 1.25rem; border-radius: 12px; background: var(--accent-soft); border: 1px solid rgba(232, 165, 75, 0.28); opacity: 0; transform: translateY(12px); animation: rise 0.75s var(--transition) forwards; animation-delay: 0.45s; }
+    .pill-row { display: flex; flex-wrap: wrap; gap: 0.6rem; margin: 1.1rem 0 0.4rem; }
+    .pill { font-size: 0.8rem; padding: 0.32rem 0.7rem; border-radius: 999px; background: rgba(121, 192, 255, 0.1); color: var(--blue-term); border: 1px solid rgba(121, 192, 255, 0.22); opacity: 0; transform: translateY(10px); animation: rise 0.65s var(--transition) forwards; }
+    .dual-stat { display: flex; flex-wrap: wrap; align-items: baseline; gap: 1.25rem 1.75rem; margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid rgba(255, 255, 255, 0.06); }
+    .dual-stat > div { opacity: 0; animation: rise 0.7s var(--transition) forwards; }
+    .table-wrap { margin-top: 0.85rem; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.08); opacity: 0; animation: rise 0.75s var(--transition) forwards; animation-delay: 0.12s; max-height: 60vh; overflow-y: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: clamp(0.78rem, 1.05vw, 0.92rem); }
+    th, td { padding: 0.6rem 0.85rem; text-align: left; border-bottom: 1px solid rgba(255, 255, 255, 0.06); vertical-align: top; }
+    th { background: rgba(232, 165, 75, 0.08); color: var(--accent); font-weight: 600; font-size: 0.78rem; letter-spacing: 0.04em; position: sticky; top: 0; }
+    td code { font-family: "DM Sans", monospace; font-size: 0.85em; color: var(--blue-term); background: rgba(121, 192, 255, 0.06); padding: 0.05em 0.35em; border-radius: 3px; }
+    .emoji { font-size: 1.4em; vertical-align: middle; }
+    .quote-block { margin: 1.25rem 0; padding: 1rem 1.25rem; border-left: 3px solid var(--accent); background: rgba(232, 165, 75, 0.05); border-radius: 0 8px 8px 0; opacity: 0; transform: translateY(12px); animation: rise 0.75s var(--transition) forwards; animation-delay: 0.2s; }
+    .quote-block p { color: var(--text); font-size: clamp(1rem, 1.5vw, 1.2rem); font-style: italic; animation: none; opacity: 1; transform: none; }
+
+    @keyframes rise { to { opacity: 1; transform: translateY(0); } }
+    .slide.active .slide-tag, .slide.active h1, .slide.active h2, .slide.active p, .slide.active li { animation-fill-mode: forwards; }
+    .slide:not(.active) .slide-tag, .slide:not(.active) h1, .slide:not(.active) h2, .slide:not(.active) p, .slide:not(.active) li, .slide:not(.active) .stat-card, .slide:not(.active) .money-callout, .slide:not(.active) .pill, .slide:not(.active) .dual-stat > div, .slide:not(.active) .table-wrap, .slide:not(.active) .quote-block { animation: none; opacity: 0; }
+  </style>
+</head>
+<body>
+  <div class="timer-wrap paused" id="timer" role="button" tabindex="0" aria-label="Timer: Click or press T to start/pause, 10 min countdown" title="Click or press T to start/pause">
+    <div>
+      <div class="timer-label">10 min</div>
+      <div class="timer-display" id="timerText">10:00</div>
+    </div>
+    <div class="timer-bar" aria-hidden="true">
+      <div class="timer-bar-fill" id="timerFill"></div>
+    </div>
+  </div>
+
+  <div class="deck">
+    <div class="slides" id="slides">
+
+      <!-- Slide 1: Title -->
+      <section class="slide active">
+        <div class="slide-inner">
+          <span class="slide-tag">Pitch v4 · 10 Min · 2026-05-12</span>
+          <h1>Soloco</h1>
+          <p style="max-width: 38ch; font-size: clamp(1.1rem, 1.8vw, 1.4rem); color: var(--text);">
+            押注未来组织形态的<strong class="accent">操作系统</strong>。
+          </p>
+          <p class="pill-row">
+            <span class="pill">New Org Form</span>
+            <span class="pill">Vertical Takeover</span>
+            <span class="pill">Orchestrator OS</span>
+          </p>
+        </div>
+      </section>
+
+      <!-- Slide 2: TL;DR / The Big Bet -->
+      <section class="slide">
+        <div class="slide-inner">
+          <span class="slide-tag">01 · The Big Bet</span>
+          <h2>我们押的不是 AI 工具，是组织形态本身的迁移</h2>
+          <p>旧公司是围绕「<strong>人作为执行者</strong>」构建的——招人、培训、汇报、KPI、996。</p>
+          <p>未来公司是围绕「<strong class="accent">Agent 作为执行者</strong>」构建的——配置、调度、监督、迭代、7×24。</p>
+          <div class="quote-block">
+            <p>不用 Agent 的公司，不是 Agent 不行，是公司终将被淘汰。</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Slide 3: The Shift -->
+      <section class="slide">
+        <div class="slide-inner">
+          <span class="slide-tag">02 · The Shift</span>
+          <h2>过去 200 年的组织设计，全部是为「人的局限性」服务的</h2>
+          <ul>
+            <li style="--i: 0">人会累 → 需要排班和轮岗</li>
+            <li style="--i: 1">人有信息瓶颈 → 需要会议和同步</li>
+            <li style="--i: 2">人有专业边界 → 需要部门和职能墙</li>
+            <li style="--i: 3">人有招聘周期 → 需要 HC 和 headcount 预算</li>
+            <li style="--i: 4">人会跳槽 → 需要知识管理和交接</li>
+          </ul>
+          <p style="margin-top: 1.1rem; animation-delay: 0.55s;">
+            <strong class="accent">Agent 没有以上任何一个限制。</strong>所以围绕 Agent 构建的组织，结构会和今天截然不同——更扁平、更动态、更弹性、更接近「愿景 → 产出」的直线。
+          </p>
+        </div>
+      </section>
+
+      <!-- Slide 4: Anthropic Reflexive Bet -->
+      <section class="slide">
+        <div class="slide-inner">
+          <span class="slide-tag">03 · The Reflexive Bet · 暴论</span>
+          <h2>Anthropic 终将也是我们的客户 <span class="emoji">😏</span></h2>
+          <p>Anthropic 现在急速扩张——招人、扩 team、铺产品线。但他们终将面对一个尴尬事实：</p>
+          <div class="quote-block">
+            <p>做 foundation model 的公司，自己内部却用人手做大量可被 AI 化的工作——研究方向调研、安全评估报告、客户成功、文档维护、行政审批……</p>
+          </div>
+          <p style="animation-delay: 0.4s;">
+            <strong>Anthropic 开始裁员的那一天，可能就是因为他们装了 Soloco。</strong>
+          </p>
+          <p style="animation-delay: 0.55s; font-size: 0.95rem;">
+            这不是嘲讽——是 <span class="term-en">reflexive</span> 产品验证：如果连 Anthropic 都用我们，AI 组织迁移就是真的。
+          </p>
+        </div>
+      </section>
+
+      <!-- Slide 5: Three Pillars -->
+      <section class="slide">
+        <div class="slide-inner">
+          <span class="slide-tag">04 · What We Build</span>
+          <h2>三大支柱</h2>
+          <div class="stat-grid">
+            <div class="stat-card">
+              <div class="label"><span class="term-en">Pillar I</span></div>
+              <div class="pillar-title">业务接管</div>
+              <div class="pillar-body">把每一支「手头工作密集型」的职能团队替换成 AI 组织——长周期运转、按 SOP 交付、自带质量门禁。</div>
+            </div>
+            <div class="stat-card">
+              <div class="label"><span class="term-en">Pillar II</span></div>
+              <div class="pillar-title">Orchestrator</div>
+              <div class="pillar-body">老板的单一管理入口——提供数据 + 愿景，得到组织画布 + 实时甘特图 + Pivot 弹窗。</div>
+            </div>
+            <div class="stat-card">
+              <div class="label"><span class="term-en">Pillar III</span></div>
+              <div class="pillar-title">自迭代飞轮</div>
+              <div class="pillar-body">组织一旦形成，持续升级——客户用得越久，组织越个性化，切换成本越高。</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Slide 6: Pillar 1 — AV Showcase Intro -->
+      <section class="slide">
+        <div class="slide-inner">
+          <span class="slide-tag">05 · Pillar I · 自动驾驶样板</span>
+          <h2>为什么先讲自动驾驶</h2>
+          <ul>
+            <li style="--i: 0"><strong>工具链高度 SOP 化</strong>：bazel / argo workflow / replay / cli / DBC 自动生成——每支团队都在和确定性管道打交道</li>
+            <li style="--i: 1"><strong>产出可批量验证</strong>：数值对比、回归测试、覆盖率指标——AI 产出可机器校验，不靠人审美</li>
+            <li style="--i: 2"><strong>团队规模大 + 烧钱压力大</strong>：100-500 人工程团队，估值压力下最有动力 AI 化</li>
+            <li style="--i: 3"><strong>真实可触达</strong>：我们就在 tranxmart 平台里工作，wiki 24 个领域 ~190 篇笔记是现成 SOP 弹药</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Slide 7: AV Takeover Table -->
+      <section class="slide">
+        <div class="slide-inner">
+          <span class="slide-tag">05 · Pillar I · AV 接管包</span>
+          <h2>一家自动驾驶公司 = 7 个接管包</h2>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>AV 团队</th><th>规模</th><th>主要"手头工作"</th><th>AI 接管后</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>Control / 标定</strong></td><td>5-15 人</td><td><code>param_identification</code> 跑批 / steering bias / 跨车型 <code>tractor_param</code> diff</td><td>参数辨识全自动 / 评测日产</td></tr>
+                <tr><td><strong>Planning / 规划</strong></td><td>10-30 人</td><td><code>planning_param.pb.txt</code> 权重 tuning / IPOPT 收敛 / <code>replay_main</code> 回归</td><td>参数搜索遍历 / 收敛诊断</td></tr>
+                <tr><td><strong>CAN / DBW</strong></td><td>3-10 人</td><td>DBC 信号编码 / <code>protocol_auto_generator</code> / J1939-PGN 映射</td><td>DBC 改动驱动代码自动再生</td></tr>
+                <tr><td><strong>仿真 / 测试</strong></td><td>10-25 人</td><td><code>simulation_main</code> 跑批 / Argo Workflow 监控 / 场景库维护</td><td>CI 失败根因分析 / 仿真编排</td></tr>
+                <tr><td><strong>Build / Infra</strong></td><td>5-15 人</td><td>Bazel BUILD / <code>MODULE.bazel</code> 依赖 / lint/format</td><td>BUILD 自动生成 / CI 优化</td></tr>
+                <tr><td><strong>数据 / Record</strong></td><td>5-10 人</td><td><code>data_cli download</code> / topic 白名单 / record schema 校验</td><td>数据集自动组装 / 异常隔离</td></tr>
+                <tr><td><strong>定位 / 融合</strong></td><td>5-15 人</td><td>ESKF 参数 / 传感器输入校验 / 收敛分析</td><td>参数 sweep / 收敛日报</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Slide 8: AV ROI -->
+      <section class="slide">
+        <div class="slide-inner">
+          <span class="slide-tag">05 · Pillar I · ROI 实算</span>
+          <h2>单家自动驾驶公司 ROI</h2>
+          <div class="dual-stat">
+            <div style="animation-delay: 0.15s;">
+              <div class="subline">200 人工程团队年成本</div>
+              <div><span class="big-stat">¥6000万</span> <span class="subline">– ¥1 亿 / 年</span></div>
+            </div>
+            <div style="animation-delay: 0.25s;">
+              <div class="subline">Soloco 替代可重复 SOP 工作</div>
+              <div><span class="big-stat">30-50%</span></div>
+            </div>
+          </div>
+          <div class="money-callout">
+            <div class="subline">客户年节约 vs Soloco 年订阅</div>
+            <div style="margin-top: 0.4rem;">
+              <span class="big-stat">¥2000-5000 万</span>
+              <span class="subline" style="display: inline; margin-left: 0.5rem;">节约</span>
+              <span style="margin: 0 0.6rem; color: var(--text-muted);">vs</span>
+              <span class="big-stat">¥300-500 万</span>
+              <span class="subline" style="display: inline; margin-left: 0.5rem;">订阅 → ROI <strong class="accent">5-15×</strong></span>
+            </div>
+          </div>
+          <p style="margin-top: 1rem; font-size: 0.95rem; animation-delay: 0.55s;">
+            而且 Agent <strong>7×24 不休 · 弹性扩缩 · 不会跳槽</strong>。
+          </p>
+        </div>
+      </section>
+
+      <!-- Slide 9: Pillar 2 — Orchestrator -->
+      <section class="slide">
+        <div class="slide-inner">
+          <span class="slide-tag">06 · Pillar II · 单一入口</span>
+          <h2>老板永远只面对一个对话框</h2>
+          <div class="stat-grid">
+            <div class="stat-card" style="animation-delay: 0.15s;">
+              <div class="label"><span class="term-en">Input</span> · 老板提供</div>
+              <div class="pillar-body" style="margin-top: 0.5rem;">公司数据 + 一句话愿景 + 关键决策时的拍板</div>
+            </div>
+            <div class="stat-card" style="animation-delay: 0.25s;">
+              <div class="label"><span class="term-en">Process</span> · Orchestrator</div>
+              <div class="pillar-body" style="margin-top: 0.5rem;">Task Order · Review · GO/NO-GO · Pivot 四件套</div>
+            </div>
+            <div class="stat-card" style="animation-delay: 0.35s;">
+              <div class="label"><span class="term-en">Output</span> · Soloco 自动产出</div>
+              <div class="pillar-body" style="margin-top: 0.5rem;">AI 组织画布（架构）· 实时甘特图（进展）· Pivot 弹窗（拍板点）</div>
+            </div>
+          </div>
+          <p style="margin-top: 1.1rem; animation-delay: 0.5s;">
+            <strong>管 100 个 Agent 的认知负担 = 管 1 个 Orchestrator。</strong>打高尔夫时打开手机也能监工。
+          </p>
+        </div>
+      </section>
+
+      <!-- Slide 10: Pillar 3 — Flywheel -->
+      <section class="slide">
+        <div class="slide-inner">
+          <span class="slide-tag">07 · Pillar III · 自迭代飞轮</span>
+          <h2>组织一旦形成，越用越值</h2>
+          <ul>
+            <li style="--i: 0">跑通的任务 → 沉淀为客户专属 <span class="term-en">SOP</span></li>
+            <li style="--i: 1">出错的环节 → Conductor 自动调整任务单 / 引入新 Agent 角色</li>
+            <li style="--i: 2">老板的拍板偏好 → Orchestrator 自动学习，未来同类决策不再打扰</li>
+            <li style="--i: 3">跨客户最佳实践 → 平台抽象成可订阅的「团队模板」</li>
+          </ul>
+          <div class="quote-block">
+            <p>真正的护城河不是初始功能，是<strong class="accent">组织记忆的不可迁移性</strong>。<br/>你不会因为有更好的 IDE 就把整个 GitHub 仓库迁走——同样的逻辑放大 100 倍。</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Slide 11: Why Now -->
+      <section class="slide">
+        <div class="slide-inner">
+          <span class="slide-tag">08 · Why Now</span>
+          <h2>窗口期 12-18 个月</h2>
+          <p class="pill-row">
+            <span class="pill" style="animation-delay: 0.15s;">Claude 4.6 / 4.7 · GPT-5</span>
+            <span class="pill" style="animation-delay: 0.22s;">MCP 协议</span>
+            <span class="pill" style="animation-delay: 0.29s;">CLI 用户教育</span>
+            <span class="pill" style="animation-delay: 0.36s;">AI 原生组织共识</span>
+          </p>
+          <ul>
+            <li style="--i: 0">模型可靠性首次跨过<strong>团队级</strong>门槛——长 context + 多步执行可用</li>
+            <li style="--i: 1">Agent ↔ 工具集成成本断崖式下降，垂直 SOP 包可快速组装</li>
+            <li style="--i: 2">Cursor / Claude Code 验证开发场景，下一步轮到非开发职能</li>
+            <li style="--i: 3">头部 AI 公司开始把内部工作 AI 化——用户群已扩展到模型公司自己</li>
+          </ul>
+          <p style="margin-top: 1rem; animation-delay: 0.55s;">
+            错过这个窗口 → 要么巨头吃掉，要么被另一个「组织生态」项目占住认知。
+          </p>
+        </div>
+      </section>
+
+      <!-- Slide 12: Real Competitor -->
+      <section class="slide">
+        <div class="slide-inner">
+          <span class="slide-tag">09 · The Real Competitor</span>
+          <h2>真正的对手不是 Devin / Manus</h2>
+          <div class="quote-block">
+            <p>是「那家公司今天的<strong class="accent">组织架构图</strong>本身」。</p>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>维度</th><th>旧组织（人执行）</th><th>单 Agent 工具</th><th><strong class="accent">Soloco</strong></th></tr>
+              </thead>
+              <tbody>
+                <tr><td>执行单元</td><td>人</td><td>单 AI Agent</td><td><strong>AI Agent 组织</strong></td></tr>
+                <tr><td>协作机制</td><td>会议 + 邮件 + PM</td><td>无</td><td><strong>Orchestrator + GO/NO-GO</strong></td></tr>
+                <tr><td>老板视图</td><td>月度汇报</td><td>chat</td><td><strong>组织画布 + 甘特图</strong></td></tr>
+                <tr><td>弹性</td><td>招聘周期 1-3 月</td><td>不可扩</td><td><strong>新职能 = 配新包，分钟级</strong></td></tr>
+                <tr><td>切换成本</td><td>高（裁员痛苦）</td><td>低</td><td><strong>极高（组织记忆不可迁移）</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Slide 13: Moat & Business Model -->
+      <section class="slide">
+        <div class="slide-inner">
+          <span class="slide-tag">10 · Moat & Business Model</span>
+          <h2>真护城河 · 商业模式</h2>
+          <p class="pill-row">
+            <span class="pill" style="animation-delay: 0.12s;">Orchestrator IP</span>
+            <span class="pill" style="animation-delay: 0.18s;">行业 SOP 库</span>
+            <span class="pill" style="animation-delay: 0.24s;">客户组织记忆</span>
+            <span class="pill" style="animation-delay: 0.30s;">跨模型抽象</span>
+            <span class="pill" style="animation-delay: 0.36s;">零 token 成本</span>
+            <span class="pill" style="animation-delay: 0.42s;">心智占位</span>
+          </p>
+          <ul>
+            <li style="--i: 0"><strong>短期（0-6 月）</strong>：开源 NPM + AV Takeover wedge → 跑通"客户上完不下来"留存</li>
+            <li style="--i: 1"><strong>中期（6-18 月）</strong>：垂直接管包年订阅，单价 = 替代团队成本 <span class="accent">10-20%</span></li>
+            <li style="--i: 2"><strong>长期（18+ 月）</strong>：开放 SDK → AI 组织的应用商店 → 平台抽成</li>
+          </ul>
+          <div class="quote-block">
+            <p>终局：每家公司的组织都跑在 Soloco 上——就像每个开发者的代码都跑在 GitHub 上。</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Slide 14: Ask + Milestones -->
+      <section class="slide">
+        <div class="slide-inner">
+          <span class="slide-tag">11 · The Ask · 5 月里程碑</span>
+          <h2>种子轮 · 12 月叙事</h2>
+          <div class="stat-grid">
+            <div class="stat-card" style="animation-delay: 0.12s;">
+              <div class="label">05-19 · M1</div>
+              <div class="pillar-title">Demo 串联</div>
+              <div class="pillar-body">端到端 Takeover Demo 跑通</div>
+            </div>
+            <div class="stat-card" style="animation-delay: 0.22s;">
+              <div class="label">05-22 · M2</div>
+              <div class="pillar-title">Live Demo</div>
+              <div class="pillar-body">投资人路演 + Term Sheet</div>
+            </div>
+            <div class="stat-card" style="animation-delay: 0.32s;">
+              <div class="label">05-30 · M3</div>
+              <div class="pillar-title">公开 Beta</div>
+              <div class="pillar-body">NPM 包公开发布</div>
+            </div>
+          </div>
+          <div class="money-callout">
+            <div class="subline">12 月里程碑（A 轮叙事素材）</div>
+            <div style="margin-top: 0.4rem;">
+              <span class="big-stat">10</span>
+              <span class="subline" style="display: inline; margin-left: 0.5rem;">付费 AV 接管包客户 · 1 个非开发垂直包 prototype · 飞轮闭环数据</span>
+            </div>
+          </div>
+          <p style="margin-top: 1rem; font-size: 0.95rem; animation-delay: 0.65s;">
+            资金用途：1 名全职工程师（CICD + 长周期稳定性）· AV 接管包打磨到 PMF
+          </p>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <div class="slide-meta">
+    <span id="slideNum">1 / 14</span>
+    <span><kbd>←</kbd> <kbd>→</kbd> Navigation</span>
+    <span><kbd>T</kbd> Timer</span>
+  </div>
+
+  <script>
+    (function () {
+      var slides = Array.prototype.slice.call(document.querySelectorAll(".slide"));
+      var total = slides.length;
+      var current = 0;
+      var timerEl = document.getElementById("timer");
+      var timerText = document.getElementById("timerText");
+      var timerFill = document.getElementById("timerFill");
+      var slideNum = document.getElementById("slideNum");
+
+      var TOTAL_SEC = 600;
+      var remaining = TOTAL_SEC;
+      var intervalId = null;
+      var running = false;
+
+      function formatTime(sec) {
+        var m = Math.floor(sec / 60);
+        var s = sec % 60;
+        return m + ":" + (s < 10 ? "0" : "") + s;
+      }
+
+      function updateTimerDisplay() {
+        timerText.textContent = formatTime(remaining);
+        var p = remaining / TOTAL_SEC;
+        timerFill.style.transform = "scaleX(" + p + ")";
+      }
+
+      function tick() {
+        if (remaining <= 0) { stopTimer(); return; }
+        remaining--;
+        updateTimerDisplay();
+        if (remaining <= 0) stopTimer();
+      }
+
+      function startTimer() {
+        if (intervalId) return;
+        running = true;
+        timerEl.classList.remove("paused");
+        intervalId = setInterval(tick, 1000);
+      }
+
+      function stopTimer() {
+        running = false;
+        timerEl.classList.add("paused");
+        if (intervalId) { clearInterval(intervalId); intervalId = null; }
+      }
+
+      function toggleTimer() {
+        if (running) { stopTimer(); } else { if (remaining <= 0) remaining = TOTAL_SEC; updateTimerDisplay(); startTimer(); }
+      }
+
+      function showSlide(index) {
+        if (index < 0) index = 0;
+        if (index >= total) index = total - 1;
+        current = index;
+        slides.forEach(function (slide, i) {
+          slide.classList.remove("active", "prev");
+          if (i === current) {
+            slide.classList.add("active");
+            slide.setAttribute("aria-hidden", "false");
+          } else {
+            slide.setAttribute("aria-hidden", "true");
+            if (i < current) slide.classList.add("prev");
+          }
+        });
+        slideNum.textContent = current + 1 + " / " + total;
+
+        // Animate bar-fills if slide has any
+        requestAnimationFrame(function () {
+          document.querySelectorAll(".slide:not(.active) .bar-fill[data-width]").forEach(function (bar) {
+            bar.style.width = "0%";
+          });
+          document.querySelectorAll(".slide.active .bar-fill[data-width]").forEach(function (bar) {
+            var w = bar.getAttribute("data-width");
+            bar.style.width = "0%";
+            requestAnimationFrame(function () { bar.style.width = w + "%"; });
+          });
+        });
+      }
+
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "ArrowRight" || e.key === " " || e.key === "PageDown") { e.preventDefault(); showSlide(current + 1); }
+        else if (e.key === "ArrowLeft" || e.key === "PageUp") { e.preventDefault(); showSlide(current - 1); }
+        else if (e.key === "t" || e.key === "T") { e.preventDefault(); toggleTimer(); }
+      });
+
+      timerEl.addEventListener("click", function (e) { e.preventDefault(); toggleTimer(); });
+      updateTimerDisplay();
+      showSlide(0);
+    })();
+  </script>
+</body>
+</html>
