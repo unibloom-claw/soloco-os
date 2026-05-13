@@ -144,6 +144,8 @@ Personal OS                   →  OPC OS
 |---|---|
 | `index.html` | Interactive pitch deck — keyboard nav, 10-min timer / 交互式融资 Deck，支持键盘导航与计时 |
 | `narrative.html` | Full narrative script for the funding pitch / 融资 Deck 完整叙事文稿 |
+| `narrative-2026-05-13.html` | Distilled narrative core — five-step storytelling logic for "AI Native Organizational OS" / 叙事核心 — AI 原生组织时代操作系统的五步故事逻辑 |
+| `pitch-v4.html` | Long-form business plan (v4) / 商业计划书 v4 长文形态 |
 
 ## Running the Pitch Deck / 打开 Pitch Deck
 
