@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en" style="background:#000000; color:#F5F5F7;">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Soloco — Build the Future of Work</title>
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300&family=Plus+Jakarta+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #000000;
+    --surface: #111111;
+    --border: rgba(255,255,255,0.09);
+    --accent: #0A84FF;      /* Apple blue — safe for deuteranopia & protanopia */
+    --accent2: #FF9F0A;     /* Apple orange — max contrast vs blue for all CVD types */
+    --text: #F5F5F7;        /* Apple off-white */
+    --muted: #86868B;       /* Apple secondary label */
+    --card: #1C1C1E;        /* Apple grouped background */
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    background: #000000 !important;
+    color: #F5F5F7 !important;
+  }
+
+  body {
+    background: #000000 !important;
+    color: #F5F5F7 !important;
+    font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+    font-weight: 300;
+    line-height: 1.75;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE TEXTURE ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── GLOW ORBS ── */
+  .orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.12;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .orb-1 { width: 600px; height: 600px; background: var(--accent); top: -200px; right: -100px; }
+  .orb-2 { width: 400px; height: 400px; background: var(--accent2); bottom: 200px; left: -100px; }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    padding: 24px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.88), transparent);
+    backdrop-filter: blur(4px);
+  }
+
+  .logo {
+    font-family: 'Urbanist', -apple-system, sans-serif;
+    font-weight: 700;
+    font-size: 1.25rem;
+    letter-spacing: -0.03em;
+    color: #fff;
+  }
+
+  .logo span {
+    color: var(--accent2);
+  }
+
+  .nav-tag {
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    padding: 6px 14px;
+    border-radius: 100px;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 120px 48px 80px;
+    max-width: 1100px;
+    margin: 0 auto;
+    z-index: 1;
+  }
+
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin-bottom: 32px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.1s ease forwards;
+  }
+
+  .hero-eyebrow::before {
+    content: '';
+    display: block;
+    width: 32px;
+    height: 1px;
+    background: var(--accent2);
+  }
+
+  h1 {
+    font-family: 'Urbanist', -apple-system, sans-serif;
+    font-weight: 700;
+    font-size: clamp(2.8rem, 6.5vw, 5.5rem);
+    line-height: 1.05;
+    letter-spacing: -0.04em;
+    margin-bottom: 32px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.25s ease forwards;
+  }
+
+  h1 .line-2 {
+    color: var(--accent);
+  }
+
+  h1 .line-3 {
+    -webkit-text-stroke: 1px rgba(245,245,247,0.28);
+    color: transparent;
+  }
+
+  .hero-desc {
+    max-width: 560px;
+    font-size: 1.1rem;
+    color: rgba(245,245,247,0.72);
+    margin-bottom: 48px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.4s ease forwards;
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.55s ease forwards;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+    font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+    font-weight: 500;
+    font-size: 0.9rem;
+    padding: 14px 28px;
+    border-radius: 8px;
+    text-decoration: none;
+    letter-spacing: 0.01em;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-primary::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(10,132,255,0.4);
+  }
+
+  .btn-ghost {
+    color: var(--muted);
+    font-size: 0.85rem;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: color 0.2s;
+  }
+  .btn-ghost:hover { color: var(--text); }
+
+  /* ── STATS STRIP ── */
+  .stats-strip {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 48px 80px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.7s ease forwards;
+  }
+
+  .stat {
+    background: var(--card);
+    padding: 32px 36px;
+  }
+
+  .stat-value {
+    font-family: 'Urbanist', -apple-system, sans-serif;
+    font-weight: 700;
+    font-size: 2rem;
+    letter-spacing: -0.04em;
+    color: #fff;
+    margin-bottom: 4px;
+  }
+
+  .stat-value span { color: var(--accent2); }
+
+  .stat-label {
+    font-size: 0.8rem;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+
+  /* ── SECTION ── */
+  section {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 80px 48px;
+  }
+
+  .section-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  h2 {
+    font-family: 'Urbanist', -apple-system, sans-serif;
+    font-weight: 600;
+    font-size: clamp(1.8rem, 3vw, 2.4rem);
+    letter-spacing: -0.03em;
+    line-height: 1.18;
+    margin-bottom: 16px;
+  }
+
+  .section-sub {
+    color: rgba(245,245,247,0.6);
+    max-width: 520px;
+    margin-bottom: 56px;
+    font-size: 1rem;
+  }
+
+  /* ── TRACKS ── */
+  .tracks {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  .track-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 36px 32px;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .track-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--track-color, var(--accent));
+    transform: scaleX(0);
+    transition: transform 0.3s;
+    transform-origin: left;
+  }
+
+  .track-card:hover { border-color: rgba(255,255,255,0.12); transform: translateY(-4px); }
+  .track-card:hover::before { transform: scaleX(1); }
+
+  .track-card:nth-child(1) { --track-color: var(--accent); }
+  .track-card:nth-child(2) { --track-color: var(--accent2); }
+  .track-card:nth-child(3) { --track-color: #FF6B35; }
+
+  .track-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+  }
+
+  .track-title {
+    font-family: 'Urbanist', -apple-system, sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 12px;
+    letter-spacing: -0.01em;
+  }
+
+  .track-desc {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.65;
+  }
+
+  .track-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 20px;
+  }
+
+  .tag {
+    font-size: 0.72rem;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    padding: 4px 10px;
+    border-radius: 100px;
+    color: var(--muted);
+    letter-spacing: 0.03em;
+  }
+
+  /* ── WHO WE WANT ── */
+  .qualities {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .quality-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 24px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    font-size: 0.9rem;
+  }
+
+  .quality-check {
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: rgba(255,159,10,0.1);
+    border: 1px solid rgba(255,159,10,0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+    color: var(--accent2);
+    font-size: 0.75rem;
+  }
+
+  .quality-text strong {
+    display: block;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 3px;
+    font-size: 0.9rem;
+  }
+
+  .quality-text span {
+    color: var(--muted);
+    font-size: 0.82rem;
+    line-height: 1.5;
+  }
+
+  /* ── WHAT YOU GET ── */
+  .perks-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .perk {
+    padding: 28px 32px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+  }
+
+  .perk-num {
+    font-family: 'Urbanist', -apple-system, sans-serif;
+    font-weight: 800;
+    font-size: 0.75rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    margin-bottom: 12px;
+  }
+
+  .perk-title {
+    font-family: 'Urbanist', -apple-system, sans-serif;
+    font-weight: 600;
+    font-size: 1.05rem;
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
+  }
+
+  .perk-desc {
+    font-size: 0.86rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* ── LOCATION ── */
+  .location-block {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    align-items: center;
+  }
+
+  .location-info h3 {
+    font-family: 'Urbanist', -apple-system, sans-serif;
+    font-weight: 700;
+    font-size: 1.6rem;
+    letter-spacing: -0.02em;
+    margin-bottom: 12px;
+  }
+
+  .location-info p {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+  }
+
+  .location-detail {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.85rem;
+    color: rgba(245,245,247,0.72);
+    margin-bottom: 10px;
+  }
+
+  .location-detail::before {
+    content: '→';
+    color: var(--accent2);
+    font-size: 0.8rem;
+  }
+
+  .map-placeholder {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    height: 240px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: var(--muted);
+    font-size: 0.85rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .map-placeholder::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 60% 50%, rgba(10,132,255,0.08), transparent 70%);
+  }
+
+  .map-icon { font-size: 2rem; }
+
+  /* ── APPLY CTA ── */
+  .apply-section {
+    text-align: center;
+    padding: 100px 48px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .apply-inner {
+    max-width: 620px;
+    margin: 0 auto;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 64px 48px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .apply-inner::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  }
+
+  .apply-inner h2 {
+    font-size: 2rem;
+    margin-bottom: 16px;
+  }
+
+  .apply-inner p {
+    color: var(--muted);
+    margin-bottom: 36px;
+    font-size: 0.95rem;
+  }
+
+  .apply-email {
+    display: inline-block;
+    font-family: 'Urbanist', -apple-system, sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--accent2);
+    text-decoration: none;
+    letter-spacing: -0.01em;
+    padding: 16px 32px;
+    border: 1px solid rgba(255,159,10,0.35);
+    border-radius: 10px;
+    transition: all 0.2s;
+    background: rgba(255,159,10,0.06);
+  }
+
+  .apply-email:hover {
+    background: rgba(255,159,10,0.1);
+    border-color: rgba(255,159,10,0.55);
+    transform: translateY(-2px);
+  }
+
+  .apply-note {
+    margin-top: 24px;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+
+  /* ── DIVIDER ── */
+  .divider {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 48px;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 32px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── PRINT / PDF ── */
+  @media print {
+    * {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+      color-adjust: exact !important;
+    }
+    .orb { display: none; }
+    nav { position: relative; }
+    body::before { display: none; }
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    nav { padding: 20px 24px; }
+    .hero { padding: 100px 24px 60px; }
+    h1 { font-size: 2.8rem; }
+    .stats-strip { grid-template-columns: 1fr; padding: 0 24px 60px; }
+    section { padding: 60px 24px; }
+    .tracks { grid-template-columns: 1fr; }
+    .qualities { grid-template-columns: 1fr; }
+    .perks-grid { grid-template-columns: 1fr; }
+    .location-block { grid-template-columns: 1fr; }
+    .apply-inner { padding: 40px 28px; }
+    footer { flex-direction: column; gap: 8px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">Solo<span>co</span></div>
+  <div class="nav-tag">Now Recruiting · Summer 2026</div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">Internship Program · Shanghai · Summer 2026</div>
+  <h1>
+    Build the OS<br>
+    <span class="line-2">for the AI-native</span><br>
+    <span class="line-3">organization.</span>
+  </h1>
+  <p class="hero-desc">
+    Human collaboration is being reinvented. Soloco is building the operating system for that reinvention — and we're looking for the young minds audacious enough to help us do it.
+  </p>
+  <div class="hero-cta">
+    <a href="#apply" class="btn-primary">Apply Now →</a>
+    <a href="#tracks" class="btn-ghost">See open tracks ↓</a>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section>
+  <div class="section-label">What We're Building</div>
+  <h2>From personal productivity tools<br>to organizational Agent OS.</h2>
+  <p class="section-sub">
+    In 2025, AI crossed a threshold. Models can now execute tasks continuously, use tools, and coordinate to deliver results — not just answer questions. The real opportunity isn't a better assistant. It's a fundamentally different way to run an organization.
+  </p>
+  <p class="section-sub" style="margin-top:-32px;">
+    Soloco is the operating system for that shift. Input a goal, and Soloco deploys a coordinated team of AI workers — research, sales, engineering, operations — each with defined roles, persistent memory, task queues, and audit trails. You don't manage tasks. You govern a system.
+  </p>
+  <p class="section-sub" style="margin-top:-32px; margin-bottom: 48px;">
+    Whether you're a solo founder building a One-Person Company, or a small business replacing expensive overhead with intelligent infrastructure — Soloco gives you organizational capability that used to require an entire team.
+  </p>
+</section>
+
+<div class="divider"></div>
+
+<!-- TEAM -->
+<section>
+  <div class="section-label">The Team</div>
+  <h2>Built at the frontier.</h2>
+  <p class="section-sub">
+    Soloco's founding team comes from NTU, Imperial College London, Oxford, Columbia, and HKU — with deep backgrounds in AI agent systems, LLM applications, and autonomous systems including mobile robotics and autonomous driving. We're operating where the research ends and the real product begins. Seed-funded, moving fast, and building the infrastructure layer that defines how organizations work in the age of AI.
+  </p>
+
+</section>
+
+<div class="divider"></div>
+
+<!-- STATS -->
+<div class="stats-strip">
+  <div class="stat">
+    <div class="stat-value">¥<span>10M+</span></div>
+    <div class="stat-label">Seed Funding Raised</div>
+  </div>
+  <div class="stat">
+    <div class="stat-value"><span>3</span></div>
+    <div class="stat-label">Open Intern Tracks</div>
+  </div>
+  <div class="stat">
+    <div class="stat-value"><span>Jun 1</span> '26</div>
+    <div class="stat-label">Program Start Date</div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- TRACKS -->
+<section id="tracks">
+  <div class="section-label">Intern Tracks</div>
+  <h2>Three ways to<br>make a real dent.</h2>
+  <p class="section-sub">Each track is built around genuine ownership — no busy work, no shadowing. You ship.</p>
+  <div class="tracks">
+
+    <div class="track-card">
+      <div class="track-icon">⚡</div>
+      <div class="track-title">Full-Stack Engineer Intern</div>
+      <div class="track-desc">
+        This isn't a shadow-the-senior-engineer role. You'll own features end-to-end — from UI to data layer — on a product used by real organizations. We move fast. You'll ship in week one.
+      </div>
+      <div class="track-tags">
+        <span class="tag">React / Next.js</span>
+        <span class="tag">TypeScript</span>
+        <span class="tag">Node.js</span>
+        <span class="tag">CSS / Tailwind</span>
+        <span class="tag">PostgreSQL</span>
+      </div>
+    </div>
+
+    <div class="track-card">
+      <div class="track-icon">🤖</div>
+      <div class="track-title">Applied AI Engineer Intern</div>
+      <div class="track-desc">
+        Build the intelligence layer of Soloco. Design agent pipelines, integrate frontier models, and push what's possible when AI becomes the backbone of how organizations think and act.
+      </div>
+      <div class="track-tags">
+        <span class="tag">Agent SDK</span>
+        <span class="tag">Claude / GPT APIs</span>
+        <span class="tag">Agent Pipelines</span>
+        <span class="tag">RAG</span>
+      </div>
+    </div>
+
+    <div class="track-card">
+      <div class="track-icon">🔍</div>
+      <div class="track-title">AI Experience Engineer Intern</div>
+      <div class="track-desc">
+        You break things — intentionally and brilliantly. Stress-test AI behaviors, uncover edge cases no one anticipated, and translate what you find into the product decisions that matter most.
+      </div>
+      <div class="track-tags">
+        <span class="tag">AI Behavior Testing</span>
+        <span class="tag">Competitive Analysis</span>
+        <span class="tag">Market Research</span>
+        <span class="tag">Product Intuition</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- WHO WE WANT -->
+<section>
+  <div class="section-label">Who We're Looking For</div>
+  <h2>Passionate. Opinionated.<br>Ready to ship.</h2>
+  <p class="section-sub">We don't care about your grades. We care about your hunger — the ideas you can't stop thinking about, and the things you've already built.</p>
+  <div class="qualities">
+    <div class="quality-item">
+      <div class="quality-check">✓</div>
+      <div class="quality-text">
+        <strong>Genuine passion for AI</strong>
+        <span>Not because it's trending — because you genuinely believe it changes everything. You follow the frontier, form opinions, and get excited by what comes next.</span>
+      </div>
+    </div>
+    <div class="quality-item">
+      <div class="quality-check">✓</div>
+      <div class="quality-text">
+        <strong>Original ideas</strong>
+        <span>You have a point of view. You question assumptions, propose alternatives, and push back constructively. We want thinkers, not executors.</span>
+      </div>
+    </div>
+    <div class="quality-item">
+      <div class="quality-check">✓</div>
+      <div class="quality-text">
+        <strong>Demonstrated capability</strong>
+        <span>You've built something — an app, a model, a tool, a project. Something real that you can show us. The domain doesn't matter; the act of building does.</span>
+      </div>
+    </div>
+    <div class="quality-item">
+      <div class="quality-check">✓</div>
+      <div class="quality-text">
+        <strong>English fluency</strong>
+        <span>Our documentation, codebases, and research are in English. Strong reading and written communication is essential.</span>
+      </div>
+    </div>
+    <div class="quality-item">
+      <div class="quality-check">✓</div>
+      <div class="quality-text">
+        <strong>Class of 2026 · Age 18+</strong>
+        <span>High school graduates in 2026. Gap year students and deferred university admits especially welcome. Must be 18 or above at program start.</span>
+      </div>
+    </div>
+    <div class="quality-item">
+      <div class="quality-check">✓</div>
+      <div class="quality-text">
+        <strong>Shanghai-based or relocatable</strong>
+        <span>This is an in-person role. We work from our office in Xuhui Waterfront — collaboration happens in the room.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- WHAT YOU GET -->
+<section>
+  <div class="section-label">What You Get</div>
+  <h2>More than a line<br>on your résumé.</h2>
+  <p class="section-sub">We treat interns like early team members — with accountability, ownership, and access.</p>
+  <div class="perks-grid">
+    <div class="perk">
+      <div class="perk-num">01</div>
+      <div class="perk-title">Real Product Ownership</div>
+      <div class="perk-desc">Own specific features from brief to deployment. Your name is on the commit. Your decisions ship to real users.</div>
+    </div>
+    <div class="perk">
+      <div class="perk-num">02</div>
+      <div class="perk-title">Direct Founder Access</div>
+      <div class="perk-desc">Work alongside the CTO and founding team daily. No layers, no intern busy-work. Real decisions made in front of you — and with you.</div>
+    </div>
+    <div class="perk">
+      <div class="perk-num">03</div>
+      <div class="perk-title">World-Class Compute</div>
+      <div class="perk-desc">Access to serious GPU resources and frontier model APIs. Don't let hardware limits stop your ideas — ours won't either.</div>
+    </div>
+    <div class="perk">
+      <div class="perk-num">04</div>
+      <div class="perk-title">Technical Mentorship</div>
+      <div class="perk-desc">Paired with senior engineers and AI practitioners who've shipped at scale. Weekly 1-on-1s, code reviews, and architecture sessions — not generic advice.</div>
+    </div>
+    <div class="perk">
+      <div class="perk-num">05</div>
+      <div class="perk-title">Premium Workspace</div>
+      <div class="perk-desc">A modern open office on Shanghai's Xuhui Waterfront. Fast hardware, great coffee, and the energy of a team that's building something that matters.</div>
+    </div>
+    <div class="perk">
+      <div class="perk-num">06</div>
+      <div class="perk-title">Path to Full-Time</div>
+      <div class="perk-desc">The program runs 8–12 weeks. Interns who perform exceptionally will be considered for full-time roles — no waiting until graduation.</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- LOCATION -->
+<section>
+  <div class="section-label">Location</div>
+  <div class="location-block">
+    <div class="location-info">
+      <h3>Xuhui Waterfront<br>Shanghai</h3>
+      <p>One of Shanghai's most vibrant innovation corridors — surrounded by tech companies, design studios, and the Huangpu River.</p>
+      <div class="location-detail">Xuhui District, Shanghai</div>
+      <div class="location-detail">8–12 weeks · Full-time, in-person</div>
+      <div class="location-detail">Modern open office environment</div>
+      <div class="location-detail">Program starts June 1, 2026</div>
+      <div class="location-detail">Outstanding interns considered for full-time offers</div>
+    </div>
+    <div class="map-placeholder">
+      <div class="map-icon">📍</div>
+      <div>Xuhui Waterfront · 徐汇滨江</div>
+      <div style="font-size:0.75rem; margin-top:4px; color:rgba(134,134,139,0.7)">Shanghai, China</div>
+    </div>
+  </div>
+</section>
+
+<!-- APPLY -->
+<div class="apply-section" id="apply">
+  <div class="apply-inner">
+    <div class="section-label" style="text-align:center; margin-bottom:20px;">Apply</div>
+    <h2>This moment won't<br>come twice.</h2>
+    <p>The window to build at the frontier of a paradigm shift is narrow. If you have the passion, the ideas, and the drive — send us a short email. Tell us what you've built, which track excites you, and why you want to spend your summer changing how humans work together.</p>
+    <a href="mailto:careers@soloco.ai" class="apply-email">careers@soloco.ai</a>
+    <div class="apply-note">8–12 weeks · Starting June 1 · Outstanding interns considered for full-time offers</div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<footer>
+  <div class="logo" style="font-size:1rem;">Solo<span style="color:var(--accent2)">co</span></div>
+  <div>Building the AI-Native Organization OS · Shanghai · 2026</div>
+</footer>
+
+</body>
+</html>
