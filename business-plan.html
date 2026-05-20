@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Soloco Business Plan</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0b0b0e;
+            color: #e8e8f0;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* ===== TYPOGRAPHY ===== */
+        h1 {
+            font-size: clamp(2.8rem, 6vw, 4.8rem);
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+        }
+        h2 {
+            font-size: clamp(2rem, 3.5vw, 3rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, #f0e9ff 0%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #d4d0e8;
+        }
+        h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #b8b0d0;
+        }
+        .section-tag {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #a78bfa;
+            border: 1px solid rgba(167, 139, 250, 0.25);
+            padding: 4px 14px;
+            border-radius: 100px;
+            margin-bottom: 16px;
+            background: rgba(167, 139, 250, 0.06);
+        }
+
+        /* ===== SECTIONS ===== */
+        section {
+            padding: 80px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+        section:last-child {
+            border-bottom: none;
+        }
+
+        /* ===== COVER ===== */
+        .cover {
+            padding: 100px 0 60px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+        .cover .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            color: #f0e9ff;
+            margin-bottom: 40px;
+        }
+        .cover .logo span {
+            color: #a78bfa;
+        }
+        .cover-sub {
+            font-size: 1.2rem;
+            color: #a0a0b8;
+            margin-top: 16px;
+            font-weight: 500;
+        }
+        .cover-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px 24px;
+            margin-top: 32px;
+        }
+        .cover-stack .pill {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 8px 20px;
+            border-radius: 100px;
+            font-size: 0.95rem;
+            color: #c8c4dd;
+        }
+        .cover-stack .pill strong {
+            color: #f0e9ff;
+        }
+
+        /* ===== CARDS ===== */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 16px;
+            padding: 28px 24px;
+            transition: border-color 0.25s;
+        }
+        .card:hover {
+            border-color: rgba(167, 139, 250, 0.25);
+        }
+        .card .icon {
+            font-size: 1.8rem;
+            margin-bottom: 12px;
+        }
+        .card h4 {
+            color: #f0e9ff;
+        }
+        .card p {
+            color: #b0acc4;
+            font-size: 0.95rem;
+        }
+
+        /* ===== TEAM ===== */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 24px;
+        }
+        .team-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 16px;
+            padding: 24px 20px;
+        }
+        .team-card .name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #f0e9ff;
+        }
+        .team-card .title {
+            font-size: 0.85rem;
+            color: #a78bfa;
+            font-weight: 500;
+            margin: 4px 0 12px 0;
+        }
+        .team-card .bio {
+            font-size: 0.9rem;
+            color: #b0acc4;
+            line-height: 1.7;
+        }
+        .team-card .badge {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            background: rgba(167, 139, 250, 0.12);
+            color: #c4b5fd;
+            padding: 2px 12px;
+            border-radius: 100px;
+            margin-top: 8px;
+        }
+
+        /* ===== TABLES ===== */
+        .table-wrap {
+            overflow-x: auto;
+            margin: 24px 0;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+        th {
+            background: rgba(255, 255, 255, 0.04);
+            padding: 14px 16px;
+            text-align: left;
+            font-weight: 600;
+            color: #c8c4dd;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        td {
+            padding: 14px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            color: #b0acc4;
+            vertical-align: top;
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        .table-wrap table td:first-child,
+        .table-wrap table th:first-child {
+            padding-left: 20px;
+        }
+        .table-wrap table td:last-child,
+        .table-wrap table th:last-child {
+            padding-right: 20px;
+        }
+
+        /* ===== TIMELINE ===== */
+        .timeline {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 24px;
+        }
+        .timeline-item {
+            flex: 1 1 180px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            padding: 20px 18px;
+            text-align: center;
+        }
+        .timeline-item .quarter {
+            font-weight: 700;
+            color: #a78bfa;
+            font-size: 0.85rem;
+            letter-spacing: 0.04em;
+        }
+        .timeline-item .milestone {
+            font-size: 0.95rem;
+            color: #d4d0e8;
+            margin: 8px 0;
+            font-weight: 500;
+        }
+        .timeline-item .detail {
+            font-size: 0.8rem;
+            color: #908ca8;
+        }
+        .timeline-item .pct {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #a78bfa;
+        }
+
+        /* ===== PRODUCT ARCHITECTURE DIAGRAM (CSS) ===== */
+        .arch-diagram {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            padding: 32px 16px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            margin: 24px 0;
+            overflow-x: auto;
+        }
+        .arch-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+        }
+        .arch-box {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            padding: 10px 18px;
+            font-size: 0.85rem;
+            color: #c8c4dd;
+            text-align: center;
+            min-width: 80px;
+            font-weight: 500;
+        }
+        .arch-box.highlight {
+            border-color: rgba(167, 139, 250, 0.3);
+            background: rgba(167, 139, 250, 0.06);
+            color: #f0e9ff;
+        }
+        .arch-box.large {
+            padding: 16px 28px;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        .arch-box .sub {
+            display: block;
+            font-size: 0.65rem;
+            font-weight: 400;
+            color: #908ca8;
+            margin-top: 4px;
+        }
+        .arch-arrow {
+            color: rgba(167, 139, 250, 0.5);
+            font-size: 1.2rem;
+            padding: 0 4px;
+        }
+        .arch-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #908ca8;
+            font-weight: 600;
+            margin: 4px 0;
+        }
+
+        /* ===== QUOTE / HIGHLIGHT ===== */
+        .highlight-block {
+            background: rgba(167, 139, 250, 0.05);
+            border-left: 3px solid #a78bfa;
+            padding: 24px 28px;
+            border-radius: 0 12px 12px 0;
+            margin: 24px 0;
+        }
+        .highlight-block p {
+            color: #d4d0e8;
+            font-size: 1.05rem;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            section {
+                padding: 48px 0;
+            }
+            .cover {
+                padding: 60px 0 40px 0;
+            }
+            .team-grid {
+                grid-template-columns: 1fr;
+            }
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+            .timeline {
+                flex-direction: column;
+            }
+            .arch-row {
+                flex-direction: column;
+                align-items: center;
+            }
+            .arch-arrow {
+                transform: rotate(90deg);
+            }
+        }
+
+        /* ===== MISC ===== */
+        .text-muted {
+            color: #908ca8;
+        }
+        .mt-16 {
+            margin-top: 16px;
+        }
+        .mt-24 {
+            margin-top: 24px;
+        }
+        .mb-16 {
+            margin-bottom: 16px;
+        }
+        .gap-8 {
+            gap: 8px;
+        }
+        .flex {
+            display: flex;
+        }
+        .flex-wrap {
+            flex-wrap: wrap;
+        }
+        .items-center {
+            align-items: center;
+        }
+        .gap-12 {
+            gap: 12px;
+        }
+
+        /* ===== PRODUCT DEMO PLACEHOLDER ===== */
+        .demo-screenshot {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 16px;
+            padding: 40px 24px;
+            text-align: center;
+            margin: 24px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .demo-screenshot .mock-ui {
+            display: inline-block;
+            background: #0f0f14;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 16px 24px 24px 24px;
+            max-width: 100%;
+            text-align: left;
+            font-family: 'Inter', monospace;
+            font-size: 0.8rem;
+            min-width: 280px;
+        }
+        .demo-screenshot .mock-ui .line {
+            padding: 4px 0;
+            color: #b0acc4;
+        }
+        .demo-screenshot .mock-ui .line.highlight {
+            color: #a78bfa;
+            font-weight: 600;
+        }
+        .demo-screenshot .mock-ui .line .badge-mock {
+            display: inline-block;
+            background: rgba(167, 139, 250, 0.15);
+            color: #c4b5fd;
+            padding: 0 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+        }
+
+        /* footer */
+        .footer {
+            padding: 40px 0 60px 0;
+            text-align: center;
+            color: #6a6680;
+            font-size: 0.85rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+        }
+        .footer a {
+            color: #a78bfa;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <!-- ===== COVER ===== -->
+        <header class="cover">
+            <div class="logo">Soloco<span>.</span></div>
+            <h1>From productivity software<br />to <span style="background:linear-gradient(135deg,#f0e9ff,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">AI Native Company OS</span></h1>
+            <div class="cover-stack">
+                <span class="pill"><strong>Productivity</strong> → Organization</span>
+                <span class="pill"><strong>AI Assistant</strong> → One-Person Company</span>
+                <span class="pill"><strong>Personal OS</strong> → AI Native Company OS</span>
+            </div>
+            <p class="cover-sub">The operating system for the next generation of AI-native organizations.</p>
+        </header>
+
+        <!-- ===== SECTION 1: INDUSTRY BACKGROUND ===== -->
+        <section>
+            <div class="section-tag">Industry Background</div>
+            <h2>组织形态正在换代</h2>
+            <p style="font-size:1.2rem;color:#c8c4dd;margin-bottom:24px;font-weight:500;">不是 AI 工具在升级 —— 未来公司执行层全部是 Agent，人只做管理</p>
+
+            <div class="card-grid">
+                <div class="card">
+                    <div class="icon">🧠</div>
+                    <h4>人的局限</h4>
+                    <p>人会累 → 排班、轮岗<br />人有信息瓶颈 → 会议、同步<br />人有专业边界 → 部门墙<br />有招聘周期 → HC 预算<br />人会跳槽 → 知识管理</p>
+                </div>
+                <div class="card">
+                    <div class="icon">🤖</div>
+                    <h4>Agent 的优势</h4>
+                    <p>无疲劳 · 无信息瓶颈<br />无专业边界 · 无招聘周期<br />无跳槽 · 知识持续沉淀</p>
+                </div>
+                <div class="card">
+                    <div class="icon">⚡</div>
+                    <h4>组织重构的扳机</h4>
+                    <p>上一次：手工业作坊 → 工业化公司<br />这一次：LLM → AI Native 组织<br />更扁平 · 更动态 · 更弹性</p>
+                </div>
+            </div>
+
+            <div class="highlight-block">
+                <p><strong>我们希望看到的未来公司：</strong></p>
+                <ul style="list-style:none;padding:0;margin-top:12px;color:#b0acc4;">
+                    <li style="padding:4px 0;">• <strong>执行层</strong>：各司其职的 AI Agent，承担整支团队的职能</li>
+                    <li style="padding:4px 0;">• <strong>管理层</strong>：少数的人，提供愿景、关键拍板、对外关系、价值判断</li>
+                    <li style="padding:4px 0;">• <strong>接口层</strong>：自然语言。老板下达目标，组织拆解为 Agent 可执行的任务链</li>
+                    <li style="padding:4px 0;">• <strong>结构</strong>：不再是金字塔，而是一张随目标动态重组的“任务编排图”</li>
+                </ul>
+            </div>
+
+            <div style="margin-top:24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;">
+                <div style="background:rgba(255,255,255,0.03);border-radius:12px;padding:16px 20px;border:1px solid rgba(255,255,255,0.05);">
+                    <div style="font-size:0.8rem;color:#908ca8;font-weight:500;">新核心问题</div>
+                    <div style="color:#d4d0e8;font-size:0.95rem;margin-top:6px;">Agent 权限 · 任务链 GO/NO-GO<br />人拍板 vs Orchestrator 授权<br />SOP 稳定 → 自主迭代</div>
+                </div>
+                <div style="background:rgba(255,255,255,0.03);border-radius:12px;padding:16px 20px;border:1px solid rgba(255,255,255,0.05);">
+                    <div style="font-size:0.8rem;color:#908ca8;font-weight:500;">新底座</div>
+                    <div style="color:#d4d0e8;font-size:0.95rem;margin-top:6px;">Soloco — AI Native Company OS</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== SECTION 2: CORE PRACTICE ===== -->
+        <section>
+            <div class="section-tag">Core Practice</div>
+            <h2>数据驱动的行业工具链</h2>
+            <p style="color:#b0acc4;margin-bottom:24px;">将一家自动驾驶公司驱动为 AI 原生公司 — 没人再需要手工写下一行代码</p>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr><th>领域</th><th>团队规模</th><th>SOP / 工作内容</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>仿真 / 测试</strong></td>
+                            <td>10–25 人</td>
+                            <td>debug/normal/worldsim 批量仿真 · Pre/Post-merge Argo Workflow 监控 · 失败 job retrigger · config/worldsim/*.pb.txt 场景维护 · data_cli topic 白名单过滤 · CI 失败根因分析 → 批量仿真编排 → 场景库自动扩展</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Build / Infra</strong></td>
+                            <td>5–15 人</td>
+                            <td>Bazel BUILD 维护 (cc_library / txm_proto / txm_image) · MODULE.bazel 依赖升级 · bazel run //:format · Argo Workflow YAML 调优 · GitHub Status Context 配置 · BUILD 文件自动生成 → 依赖冲突自动解 → CI 工时持续优化</td>
+                        </tr>
+                        <tr>
+                            <td><strong>数据 / Record</strong></td>
+                            <td>5–10 人</td>
+                            <td>data_cli download → include-topic-names / topic_name_whitelist 编排 · record_info.json schema 校验 · record/index 完整性扫描 · TopicFileHeader 压缩验证 · 数据集自动组装 → 异常 record 自动隔离 → 索引修复自动化</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="display:flex;flex-wrap:wrap;gap:16px;margin-top:16px;">
+                <span style="background:rgba(167,139,250,0.08);padding:6px 16px;border-radius:100px;font-size:0.85rem;color:#c4b5fd;">bazel</span>
+                <span style="background:rgba(167,139,250,0.08);padding:6px 16px;border-radius:100px;font-size:0.85rem;color:#c4b5fd;">argo workflow</span>
+                <span style="background:rgba(167,139,250,0.08);padding:6px 16px;border-radius:100px;font-size:0.85rem;color:#c4b5fd;">replay</span>
+                <span style="background:rgba(167,139,250,0.08);padding:6px 16px;border-radius:100px;font-size:0.85rem;color:#c4b5fd;">CI</span>
+                <span style="background:rgba(167,139,250,0.08);padding:6px 16px;border-radius:100px;font-size:0.85rem;color:#c4b5fd;">DBC 自动生成</span>
+                <span style="background:rgba(167,139,250,0.08);padding:6px 16px;border-radius:100px;font-size:0.85rem;color:#c4b5fd;">参数辨识</span>
+            </div>
+            <p style="color:#908ca8;margin-top:16px;font-size:0.95rem;">产出可批量验证：数值对比、回归测试、覆盖率指标 — AI 产出可机器校验，快速持续迭代</p>
+        </section>
+
+        <!-- ===== SECTION 3: TEAM ===== -->
+        <section>
+            <div class="section-tag">Team</div>
+            <h2>核心团队</h2>
+            <p style="color:#b0acc4;margin-bottom:24px;">极强学习力，日 token 消耗过亿，来自产学研融复合背景</p>
+
+            <div class="team-grid">
+                <div class="team-card">
+                    <div class="name">李明宇</div>
+                    <div class="title">创始人 CEO</div>
+                    <div class="bio">
+                        新加坡南洋理工大学理学硕士，江苏校友会副会长。连续创业者，深耕 AI 应用领域。曾参与创办 AI 节能公司 Arloid（阿洛伊德）。比特币十年投资者/持有者。曾实习于奇绩创坛、AVALABS。2020年在奇绩创坛研究 GPT-3 商业化方向。聚焦 Agent+cyptoquant 并做到 70M RMB 规模。
+                    </div>
+                    <span class="badge">连续创业 · AI 应用</span>
+                </div>
+
+                <div class="team-card">
+                    <div class="name">张天义</div>
+                    <div class="title">创始人 CTO</div>
+                    <div class="bio">
+                        高考裸分 700 全额奖学金入读香港大学 + 剑桥大学联合工程本科。哥伦比亚大学机器人与控制方向硕士。曾任哥伦比亚大学助理研究员，曾工作于 NASA 负责国际空间站项目。曾任头部自动驾驶企业高级算法工程师，并担任 Agent 技术委员会负责人，长期聚焦企业级私域 AI Agent 的设计、落地与生产环境应用。
+                    </div>
+                    <span class="badge">NASA · 自动驾驶 · Agent 技术委员会</span>
+                </div>
+
+                <div class="team-card">
+                    <div class="name">易贝</div>
+                    <div class="title">首席科学家</div>
+                    <div class="bio">
+                        牛津大学理论计算机硕士 / 帝国理工大学数学博士（逻辑模型论/图论方向）。清华大学物理博士后。中关村 u30，GGV Fellow。前晞德求索联合创始人。主要负责围绕图论及多智能体编排交叉领域的理论研究，前沿研究工程化落地。
+                    </div>
+                    <span class="badge">牛津 · 帝国理工 · 图论 + 多智能体</span>
+                </div>
+
+                <div class="team-card">
+                    <div class="name">谢上子</div>
+                    <div class="title">工程总监</div>
+                    <div class="bio">
+                        哥伦比亚大学硕士。曾在华为带领 10 人团队负责 LLM 推理加速及 KVCache 前缀存储、C++ 高性能系统研发。曾在 HSBC、VMware、腾讯、华为等企业担任技术经理，横跨 AI 基础设施、分布式数据库、云原生与全栈开发。发表 15+ 项专利及 1 篇顶会论文。
+                    </div>
+                    <span class="badge">华为 · LLM 推理加速 · 15+ 专利</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== SECTION 4: PRODUCT ARCHITECTURE ===== -->
+        <section>
+            <div class="section-tag">Product</div>
+            <h2>产品架构</h2>
+            <p style="color:#b0acc4;margin-bottom:24px;">从数据 takeover 到 CLI 路由，将最佳 SOP 沉淀成原子化/自进化的组织模块</p>
+
+            <!-- Architecture Diagram (CSS) -->
+            <div class="arch-diagram">
+                <!-- Top: AI Company OS -->
+                <div class="arch-row">
+                    <div class="arch-box large highlight">ai company os 自动运行</div>
+                </div>
+
+                <!-- Layer: Organization modules -->
+                <div class="arch-row">
+                    <div class="arch-box">组织沉淀</div>
+                    <div class="arch-box highlight">组织原子化</div>
+                    <div class="arch-box">组织自进化</div>
+                </div>
+
+                <div class="arch-label">↑ 垂直领域最佳 SOP ↑</div>
+
+                <!-- Layer: CLI Orchestration -->
+                <div class="arch-row" style="border-top:1px solid rgba(255,255,255,0.06);padding-top:16px;border-bottom:1px solid rgba(255,255,255,0.06);padding-bottom:16px;">
+                    <div class="arch-box" style="background:rgba(255,255,255,0.02);border-color:rgba(255,255,255,0.04);">Claude</div>
+                    <div class="arch-box" style="background:rgba(255,255,255,0.02);border-color:rgba(255,255,255,0.04);">Goose</div>
+                    <div class="arch-box" style="background:rgba(255,255,255,0.02);border-color:rgba(255,255,255,0.04);">Minimax</div>
+                    <div class="arch-box" style="background:rgba(255,255,255,0.02);border-color:rgba(255,255,255,0.04);">Kimi</div>
+                    <div class="arch-box" style="background:rgba(255,255,255,0.02);border-color:rgba(255,255,255,0.04);">Zhipu</div>
+                    <div class="arch-box" style="background:rgba(255,255,255,0.02);border-color:rgba(255,255,255,0.04);">DeepSeek</div>
+                </div>
+                <div class="arch-label">cli 编排层</div>
+
+                <div class="arch-arrow">↓</div>
+
+                <div class="arch-row">
+                    <div class="arch-box large">soloco</div>
+                </div>
+
+                <div class="arch-arrow">↑ takeover ↑</div>
+
+                <!-- Bottom: Data / Vision / Budget -->
+                <div class="arch-row" style="border-top:1px solid rgba(255,255,255,0.06);padding-top:16px;">
+                    <div class="arch-box">AI native company<br /><span class="sub">数据采集</span></div>
+                    <div class="arch-box">愿景 / 使命</div>
+                    <div class="arch-box">预算<br /><span class="sub">token / 运营预算</span></div>
+                </div>
+            </div>
+
+            <!-- Second Diagram: Organization Flow -->
+            <div style="margin-top:40px;">
+                <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:20px 32px;background:rgba(255,255,255,0.02);border-radius:16px;padding:32px 24px;border:1px solid rgba(255,255,255,0.05);">
+                    <div style="text-align:center;min-width:120px;">
+                        <div style="font-size:1.1rem;font-weight:600;color:#d4d0e8;">长程目标</div>
+                    </div>
+                    <div style="font-size:1.4rem;color:rgba(167,139,250,0.5);">→</div>
+                    <div style="text-align:center;min-width:140px;background:rgba(255,255,255,0.03);padding:12px 20px;border-radius:12px;">
+                        <div style="font-size:1rem;font-weight:600;color:#d4d0e8;">组织建立</div>
+                        <div style="font-size:0.75rem;color:#908ca8;margin-top:4px;">AI 驱动的 AI 组织 · 多 agent 交叉审阅<br />自动建立 agent 团队 · 全网匹配最佳 skill</div>
+                    </div>
+                    <div style="font-size:1.4rem;color:rgba(167,139,250,0.5);">→</div>
+                    <div style="text-align:center;min-width:140px;background:rgba(255,255,255,0.03);padding:12px 20px;border-radius:12px;">
+                        <div style="font-size:1rem;font-weight:600;color:#d4d0e8;">组织留存</div>
+                        <div style="font-size:0.75rem;color:#908ca8;margin-top:4px;">复用 · 董事会<br />手动招聘 · 招聘解聘</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== SECTION 5: PRODUCT DEMO ===== -->
+        <section>
+            <div class="section-tag">Product Demo</div>
+            <h2>在画布里触摸你的组织</h2>
+
+            <div class="demo-screenshot">
+                <div class="mock-ui">
+                    <div style="font-weight:700;color:#f0e9ff;font-size:0.9rem;border-bottom:1px solid rgba(255,255,255,0.06);padding-bottom:8px;margin-bottom:10px;">Soloco. &nbsp;·&nbsp; 组织画布</div>
+                    <div class="line" style="display:flex;gap:12px;flex-wrap:wrap;">
+                        <span style="color:#908ca8;">工作区</span>
+                        <span style="color:#908ca8;">控制台</span>
+                        <span style="color:#a78bfa;font-weight:600;">组织画布</span>
+                        <span style="color:#908ca8;">目标进程</span>
+                        <span style="color:#908ca8;">员工</span>
+                        <span style="color:#908ca8;">董事会</span>
+                    </div>
+                    <div style="margin-top:16px;border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:16px;background:rgba(0,0,0,0.3);">
+                        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+                            <div style="border:1px solid rgba(167,139,250,0.25);border-radius:8px;padding:6px 16px;background:rgba(167,139,250,0.06);font-weight:600;">测试公司</div>
+                            <div style="font-size:0.7rem;color:#908ca8;">↓</div>
+                            <div style="border:1px solid rgba(167,139,250,0.15);border-radius:8px;padding:6px 16px;background:rgba(167,139,250,0.03);">Conductor <span style="font-weight:400;color:#908ca8;font-size:0.7rem;">claude-opus-4-7</span></div>
+                            <div style="font-size:0.7rem;color:#908ca8;">↙ &nbsp; ↓ &nbsp; ↘</div>
+                            <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;">
+                                <span style="border:1px solid rgba(255,255,255,0.06);border-radius:6px;padding:4px 12px;font-size:0.75rem;">Soloco 产品分析师</span>
+                                <span style="border:1px solid rgba(255,255,255,0.06);border-radius:6px;padding:4px 12px;font-size:0.75rem;">原子创投研究员</span>
+                                <span style="border:1px solid rgba(255,255,255,0.06);border-radius:6px;padding:4px 12px;font-size:0.75rem;">用户输入登记员</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="margin-top:12px;font-size:0.7rem;color:#908ca8;border-top:1px solid rgba(255,255,255,0.04);padding-top:10px;">
+                        <span class="badge-mock" style="background:rgba(167,139,250,0.12);color:#c4b5fd;padding:0 8px;border-radius:4px;">● 运行中</span>
+                        &nbsp; 目标: 融资材料准备 · 进度 0/3
+                    </div>
+                </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-top:16px;">
+                <div style="background:rgba(255,255,255,0.02);border-radius:12px;padding:16px;border:1px solid rgba(255,255,255,0.05);">
+                    <div style="font-weight:600;color:#d4d0e8;">拆解</div>
+                    <div style="font-size:0.85rem;color:#908ca8;">目标 → 任务链</div>
+                </div>
+                <div style="background:rgba(255,255,255,0.02);border-radius:12px;padding:16px;border:1px solid rgba(255,255,255,0.05);">
+                    <div style="font-weight:600;color:#d4d0e8;">指挥</div>
+                    <div style="font-size:0.85rem;color:#908ca8;">Conductor 派发 · 多 Agent 协作</div>
+                </div>
+                <div style="background:rgba(255,255,255,0.02);border-radius:12px;padding:16px;border:1px solid rgba(255,255,255,0.05);">
+                    <div style="font-weight:600;color:#d4d0e8;">派发执行</div>
+                    <div style="font-size:0.85rem;color:#908ca8;">组织建立 · 模块化留存</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== SECTION 6: COMMERCIALIZATION ===== -->
+        <section>
+            <div class="section-tag">Commercialization</div>
+            <h2>商业化：takeover 工具开源，用户订阅月费和企业 workspace</h2>
+
+            <div class="highlight-block">
+                <p>先用开源 takeover 工具获取高密度早期用户，再通过个人订阅、企业 workspace 和企业 AI 原生化咨询转化为收入。</p>
+            </div>
+
+            <div style="margin-top:24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;">
+                <div style="background:rgba(255,255,255,0.03);border-radius:12px;padding:16px 20px;border:1px solid rgba(255,255,255,0.05);">
+                    <div style="font-weight:600;color:#d4d0e8;font-size:0.9rem;">初版用户画像</div>
+                    <div style="font-size:0.85rem;color:#908ca8;margin-top:6px;">
+                        Claude Max 订阅计划及 API 订阅人群<br />
+                        Codex Pro 订阅计划及 API 订阅人群<br />
+                        新 OPC 负责人 &amp; 极客开发者<br />
+                        Vibecoding 深度用户<br />
+                        具身智能等早期快速发展、追求新技术落地的科技公司
+                    </div>
+                </div>
+                <div style="background:rgba(255,255,255,0.03);border-radius:12px;padding:16px 20px;border:1px solid rgba(255,255,255,0.05);">
+                    <div style="font-weight:600;color:#d4d0e8;font-size:0.9rem;">付费模式</div>
+                    <div style="font-size:0.85rem;color:#908ca8;margin-top:6px;">
+                        本地部署 · 链接用户自己的 CLI<br />
+                        软件收取 ¥29 / $9.9 月费<br />
+                        企业定制化部署 · 基于 Soloco 的数据 AI 原生化咨询及企业智能体整体解决方案
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== SECTION 7: REVENUE AND FINANCING PLAN ===== -->
+        <section>
+            <div class="section-tag">Roadmap</div>
+            <h2>营收预测 &amp; 融资规划</h2>
+
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="quarter">2026-Q2</div>
+                    <div class="pct">已 close</div>
+                    <div class="milestone">完成种子轮融资</div>
+                    <div class="detail">种子轮 1000 万人民币已 close<br />产品发布及推广，持续投入研发工作，更新迭代版本，完善组织架构和人员招聘工作</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="quarter">2026-Q3</div>
+                    <div class="pct">¥20M</div>
+                    <div class="milestone">计划天使轮融资</div>
+                    <div class="detail">计划融资 2000 万人民币<br />产品持续迭代和完善，获得 5 家知名企业签约<br />企业签约付费额 50 万元 · 注册使用用户 30000 人次</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="quarter">2026-Q4</div>
+                    <div class="pct">60%</div>
+                    <div class="milestone">启动 Pre-A 轮融资</div>
+                    <div class="detail">产品持续迭代和完善<br />实现当年同比 ARR 500 万人民币<br />签约多家大 B 端用户，同时 C 端及小 B 端用户数持续稳定增长</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== SECTION 8: FINANCING ===== -->
+        <section>
+            <div class="section-tag">Financing</div>
+            <h2>融资需求</h2>
+
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;margin-top:16px;">
+                <div style="background:rgba(167,139,250,0.06);border:1px solid rgba(167,139,250,0.15);border-radius:16px;padding:24px 20px;text-align:center;">
+                    <div style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.06em;color:#908ca8;">种子轮</div>
+                    <div style="font-size:2.4rem;font-weight:800;color:#f0e9ff;margin:8px 0;">¥10M</div>
+                    <div style="font-size:0.9rem;color:#b0acc4;">已 close</div>
+                    <div style="font-size:0.8rem;color:#908ca8;margin-top:8px;">种子轮融资 1000 万人民币已完成</div>
+                </div>
+                <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:24px 20px;text-align:center;">
+                    <div style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.06em;color:#908ca8;">天使轮</div>
+                    <div style="font-size:1.8rem;font-weight:800;color:#d4d0e8;margin:8px 0;">¥20M</div>
+                    <div style="font-size:0.9rem;color:#b0acc4;">计划融资</div>
+                    <div style="font-size:0.8rem;color:#908ca8;margin-top:8px;">天使轮计划融资 2000 万人民币</div>
+                </div>
+                <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:24px 20px;text-align:center;">
+                    <div style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.06em;color:#908ca8;">目标 2026</div>
+                    <div style="font-size:1.2rem;font-weight:700;color:#d4d0e8;margin:8px 0;">ARR ¥5M</div>
+                    <div style="font-size:0.9rem;color:#b0acc4;">企业签约 · 用户增长</div>
+                    <div style="font-size:0.8rem;color:#908ca8;margin-top:8px;">B 端大客户 + C 端生态</div>
+                </div>
+            </div>
+
+            <div style="margin-top:24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;">
+                <div style="background:rgba(255,255,255,0.03);border-radius:12px;padding:18px 20px;border:1px solid rgba(255,255,255,0.05);">
+                    <div style="font-size:1.5rem;font-weight:800;color:#a78bfa;">15%</div>
+                    <div style="font-weight:600;color:#d4d0e8;margin-top:4px;">Token / 订阅</div>
+                </div>
+                <div style="background:rgba(255,255,255,0.03);border-radius:12px;padding:18px 20px;border:1px solid rgba(255,255,255,0.05);">
+                    <div style="font-size:1.5rem;font-weight:800;color:#a78bfa;">10%</div>
+                    <div style="font-weight:600;color:#d4d0e8;margin-top:4px;">营销推广</div>
+                </div>
+                <div style="background:rgba(255,255,255,0.03);border-radius:12px;padding:18px 20px;border:1px solid rgba(255,255,255,0.05);">
+                    <div style="font-size:1.5rem;font-weight:800;color:#a78bfa;">60%</div>
+                    <div style="font-weight:600;color:#d4d0e8;margin-top:4px;">人才引进</div>
+                </div>
+                <div style="background:rgba(255,255,255,0.03);border-radius:12px;padding:18px 20px;border:1px solid rgba(255,255,255,0.05);">
+                    <div style="font-size:1.5rem;font-weight:800;color:#a78bfa;">15%</div>
+                    <div style="font-weight:600;color:#d4d0e8;margin-top:4px;">公司运维</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== FOOTER ===== -->
+        <div class="footer">
+            Soloco. — AI Native Company OS<br />
+            <span style="font-size:0.75rem;color:#6a6680;">© 2026 · 从愿景到产出，直线加速</span>
+        </div>
+
+    </div>
+
+</body>
+</html>
