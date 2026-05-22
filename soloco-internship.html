@@ -276,7 +276,7 @@
   /* ── TRACKS ── */
   .tracks {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 16px;
   }
 
@@ -307,6 +307,7 @@
   .track-card:nth-child(1) { --track-color: var(--accent); }
   .track-card:nth-child(2) { --track-color: var(--accent2); }
   .track-card:nth-child(3) { --track-color: #FF6B35; }
+  .track-card:nth-child(4) { --track-color: #30D158; }
 
   .track-icon {
     width: 44px;
@@ -681,11 +682,11 @@
 <!-- STATS -->
 <div class="stats-strip">
   <div class="stat">
-    <div class="stat-value">¥<span>几千万+</span></div>
-    <div class="stat-label">Angel + Seed Funding Raised</div>
+    <div class="stat-value" style="font-size:1.4rem"><span>Tens of Millions</span></div>
+    <div class="stat-label">Angel + Seed Funding (RMB)</div>
   </div>
   <div class="stat">
-    <div class="stat-value"><span>3</span></div>
+    <div class="stat-value"><span>4</span></div>
     <div class="stat-label">Open Intern Tracks</div>
   </div>
   <div class="stat">
@@ -699,7 +700,7 @@
 <!-- TRACKS -->
 <section id="tracks">
   <div class="section-label">Intern Tracks</div>
-  <h2>Three ways to<br>make a real dent.</h2>
+  <h2>Four ways to<br>make a real dent.</h2>
   <p class="section-sub">Each track is built around genuine ownership — no busy work, no shadowing. You ship.</p>
   <div class="tracks">
 
@@ -740,9 +741,24 @@
       </div>
       <div class="track-tags">
         <span class="tag">AI Behavior Testing</span>
-        <span class="tag">Competitive Analysis</span>
-        <span class="tag">Market Research</span>
+        <span class="tag">Edge-Case Hunting</span>
+        <span class="tag">Eval Design</span>
         <span class="tag">Product Intuition</span>
+      </div>
+    </div>
+
+    <div class="track-card">
+      <div class="track-icon">📊</div>
+      <div class="track-title">Research & Community Intern</div>
+      <div class="track-desc">
+        Own the intelligence behind what we build and the networks that adopt it. Drive market, competitive, and product research that shapes the roadmap — and operate Soloco's open-source community alongside the closed-beta program where the agent OS earns its trust.
+      </div>
+      <div class="track-tags">
+        <span class="tag">Market Research</span>
+        <span class="tag">Competitive Research</span>
+        <span class="tag">Product Research</span>
+        <span class="tag">Open-Source Community</span>
+        <span class="tag">Beta Community Ops</span>
       </div>
     </div>
 
