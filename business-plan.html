@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-theme="dark">
+<html lang="zh-CN" data-theme="light">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -10,7 +10,7 @@
     <script>
         // 主题尽早应用，避免闪屏
         (function () {
-            var saved = localStorage.getItem('soloco-theme') || 'auto';
+            var saved = localStorage.getItem('soloco-theme') || 'light';
             var resolved = saved;
             if (saved === 'auto') {
                 resolved = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
