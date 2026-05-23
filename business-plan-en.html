@@ -1,0 +1,1347 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Soloco Business Plan</title>
+    <meta name="color-scheme" content="light dark" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+    <script>
+        // Apply theme early to avoid flash
+        (function () {
+            var saved = localStorage.getItem('soloco-theme') || 'light';
+            var resolved = saved;
+            if (saved === 'auto') {
+                resolved = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+            }
+            document.documentElement.dataset.theme = resolved;
+            document.documentElement.dataset.themePref = saved;
+        })();
+    </script>
+    <style>
+        /* ==================== THEME TOKENS ==================== */
+        :root {
+            /* Dark (default) */
+            --bg: #0b0b0e;
+            --bg-soft: #101015;
+            --bg-alt: #1c1c28;
+            --bg-invert: #16161f;
+            --bg-elevated: rgba(255, 255, 255, 0.03);
+            --bg-elevated-2: rgba(255, 255, 255, 0.05);
+            --bg-mock: #0f0f14;
+            --text: #e8e8f0;
+            --text-2: #d4d0e8;
+            --text-3: #c8c4dd;
+            --text-4: #b8b0d0;
+            --text-5: #b0acc4;
+            --text-muted: #908ca8;
+            --text-dim: #6a6680;
+            --border: rgba(255, 255, 255, 0.06);
+            --border-soft: rgba(255, 255, 255, 0.04);
+            --border-strong: rgba(255, 255, 255, 0.08);
+            --divider-strong: rgba(167, 139, 250, 0.18);
+            --accent: #a78bfa;
+            --accent-hover: #c4b5fd;
+            --accent-text: #c4b5fd;
+            --accent-soft: rgba(167, 139, 250, 0.06);
+            --accent-softer: rgba(167, 139, 250, 0.08);
+            --accent-soft-bg: rgba(167, 139, 250, 0.12);
+            --accent-border: rgba(167, 139, 250, 0.25);
+            --accent-border-soft: rgba(167, 139, 250, 0.15);
+            --logo: #f0e9ff;
+            --heading-grad: linear-gradient(135deg, #f0e9ff 0%, #a78bfa 100%);
+            --part-num-color: #a78bfa;
+            --part-num-opacity: 0.55;
+            --nav-bg: rgba(11, 11, 14, 0.78);
+            --code-bg: rgba(255, 255, 255, 0.02);
+            --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3);
+            --shadow-img: 0 8px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        :root[data-theme="light"] {
+            --bg: #f7f7fb;
+            --bg-soft: #ffffff;
+            --bg-alt: #e4e4f0;
+            --bg-invert: #1a1a2e;
+            --bg-elevated: #ffffff;
+            --bg-elevated-2: #fafafe;
+            --bg-mock: #fafafa;
+            --text: #1a1a2e;
+            --text-2: #2a2a44;
+            --text-3: #353555;
+            --text-4: #45456a;
+            --text-5: #55557a;
+            --text-muted: #75758a;
+            --text-dim: #a0a0b8;
+            --border: rgba(26, 26, 46, 0.1);
+            --border-soft: rgba(26, 26, 46, 0.06);
+            --border-strong: rgba(26, 26, 46, 0.14);
+            --divider-strong: rgba(109, 78, 232, 0.25);
+            --accent: #6d4ee8;
+            --accent-hover: #5a3dcc;
+            --accent-text: #5a3dcc;
+            --accent-soft: rgba(109, 78, 232, 0.06);
+            --accent-softer: rgba(109, 78, 232, 0.08);
+            --accent-soft-bg: rgba(109, 78, 232, 0.1);
+            --accent-border: rgba(109, 78, 232, 0.3);
+            --accent-border-soft: rgba(109, 78, 232, 0.18);
+            --logo: #1a1a2e;
+            --heading-grad: linear-gradient(135deg, #1a1a2e 0%, #6d4ee8 100%);
+            --part-num-color: #6d4ee8;
+            --part-num-opacity: 0.5;
+            --nav-bg: rgba(247, 247, 251, 0.85);
+            --code-bg: rgba(26, 26, 46, 0.03);
+            --shadow-card: 0 1px 3px rgba(26, 26, 46, 0.06), 0 1px 2px rgba(26, 26, 46, 0.04);
+            --shadow-img: 0 8px 30px rgba(26, 26, 46, 0.15);
+        }
+
+        /* ==================== RESET ==================== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: auto; }
+        @media (prefers-reduced-motion: no-preference) {
+            html { scroll-behavior: smooth; }
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+        /* ==================== CHAPTER NAV ==================== */
+        .chapter-nav {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: var(--nav-bg);
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        .chapter-nav a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            padding: 6px 14px;
+            border-radius: 100px;
+            transition: color 0.2s, background-color 0.2s;
+            white-space: nowrap;
+        }
+        .chapter-nav a:hover { color: var(--text-2); background: var(--bg-elevated); }
+        .chapter-nav a.active { color: var(--accent); background: var(--accent-soft); }
+        .chapter-nav .nav-home {
+            color: var(--logo);
+            font-weight: 700;
+            margin-right: auto;
+            padding-left: 4px;
+        }
+        .chapter-nav .nav-home:hover { background: transparent; }
+
+        /* ==================== THEME TOGGLE ==================== */
+        .theme-toggle {
+            display: inline-flex;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            padding: 3px;
+            margin-left: 12px;
+            flex-shrink: 0;
+        }
+        .theme-toggle button {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 100px;
+            font-size: 0.8rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s, color 0.2s;
+            line-height: 1;
+        }
+        .theme-toggle button:hover { color: var(--text-2); }
+        .theme-toggle button.active {
+            background: var(--accent-soft-bg);
+            color: var(--accent-text);
+        }
+        .theme-toggle svg { width: 14px; height: 14px; }
+
+        /* ==================== TYPOGRAPHY ==================== */
+        h1 {
+            font-size: clamp(2.4rem, 6vw, 4.8rem);
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            line-height: 1.15;
+        }
+        h2 {
+            font-size: clamp(1.8rem, 3.5vw, 3rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 24px;
+            background: var(--heading-grad);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        h3 { font-size: 1.4rem; font-weight: 600; margin-bottom: 16px; color: var(--text-2); }
+        h4 { font-size: 1.1rem; font-weight: 600; margin-bottom: 8px; color: var(--text-4); }
+
+        .section-tag {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--accent);
+            border: 1px solid var(--accent-border);
+            padding: 4px 14px;
+            border-radius: 100px;
+            margin-bottom: 16px;
+            background: var(--accent-soft);
+        }
+
+        /* ==================== PART WRAPPER (full-width alternating) ==================== */
+        .part-wrap {
+            position: relative;
+            transition: background-color 0.3s;
+            scroll-margin-top: 60px;
+        }
+        .part-wrap.bg-base { background: var(--bg); }
+        .part-wrap.bg-alt {
+            background: var(--bg-alt);
+            border-top: 2px solid var(--divider-strong);
+            border-bottom: 2px solid var(--divider-strong);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
+        }
+        .part-wrap.bg-invert {
+            background: var(--bg-invert);
+            border-top: 1px solid var(--divider-strong);
+            border-bottom: 1px solid var(--divider-strong);
+        }
+        :root[data-theme="dark"] .part-wrap.bg-invert {
+            background: #f3f1fa;
+            color: #1a1a2e;
+        }
+        :root[data-theme="dark"] .part-wrap.bg-invert h3,
+        :root[data-theme="dark"] .part-wrap.bg-invert h4 { color: #2a2a44; }
+        :root[data-theme="dark"] .part-wrap.bg-invert .part-title { color: #1a1a2e; }
+        :root[data-theme="dark"] .part-wrap.bg-invert p,
+        :root[data-theme="dark"] .part-wrap.bg-invert li,
+        :root[data-theme="dark"] .part-wrap.bg-invert td { color: #45456a; }
+        :root[data-theme="dark"] .part-wrap.bg-invert .card,
+        :root[data-theme="dark"] .part-wrap.bg-invert .team-card,
+        :root[data-theme="dark"] .part-wrap.bg-invert .info-card,
+        :root[data-theme="dark"] .part-wrap.bg-invert .exec-step,
+        :root[data-theme="dark"] .part-wrap.bg-invert .timeline-item,
+        :root[data-theme="dark"] .part-wrap.bg-invert .funding-card,
+        :root[data-theme="dark"] .part-wrap.bg-invert .alloc-card,
+        :root[data-theme="dark"] .part-wrap.bg-invert .flow-node.boxed {
+            background: #ffffff;
+            border-color: rgba(26, 26, 46, 0.1);
+            box-shadow: 0 1px 3px rgba(26, 26, 46, 0.06);
+        }
+        :root[data-theme="dark"] .part-wrap.bg-invert .card h4 { color: #1a1a2e; }
+        :root[data-theme="dark"] .part-wrap.bg-invert .team-card .name { color: #1a1a2e; }
+        :root[data-theme="dark"] .part-wrap.bg-invert .flow-diagram,
+        :root[data-theme="dark"] .part-wrap.bg-invert .arch-diagram { background: rgba(26, 26, 46, 0.03); border-color: rgba(26, 26, 46, 0.1); }
+        :root[data-theme="dark"] .part-wrap.bg-invert .arch-box { background: #fafafe; border-color: rgba(26, 26, 46, 0.14); color: #353555; }
+        :root[data-theme="dark"] .part-wrap.bg-invert .table-wrap { border-color: rgba(26, 26, 46, 0.1); }
+        :root[data-theme="dark"] .part-wrap.bg-invert th { background: #fafafe; color: #353555; }
+        :root[data-theme="dark"] .part-wrap.bg-invert .highlight-block p { color: #2a2a44; }
+        :root[data-theme="dark"] .part-wrap.bg-invert .exec-step .step-title,
+        :root[data-theme="dark"] .part-wrap.bg-invert .timeline-item .milestone,
+        :root[data-theme="dark"] .part-wrap.bg-invert .funding-card .amount,
+        :root[data-theme="dark"] .part-wrap.bg-invert .alloc-card .name { color: #1a1a2e; }
+        :root[data-theme="dark"] .part-wrap.bg-invert section.sub { border-color: rgba(26, 26, 46, 0.06); }
+
+        .part {
+            padding: 88px 0 32px 0;
+            position: relative;
+            scroll-margin-top: 60px;
+        }
+        .part-inner {
+            display: flex;
+            align-items: baseline;
+            gap: 28px;
+            padding-bottom: 28px;
+            border-bottom: 1px solid var(--border);
+        }
+        .part-num {
+            font-size: clamp(4rem, 11vw, 8.5rem);
+            font-weight: 800;
+            line-height: 0.85;
+            color: var(--part-num-color);
+            opacity: var(--part-num-opacity);
+            letter-spacing: -0.06em;
+            flex-shrink: 0;
+            font-feature-settings: "tnum";
+            font-variant-numeric: tabular-nums;
+        }
+        .part-num .cn {
+            display: block;
+            font-size: 0.22em;
+            font-weight: 600;
+            letter-spacing: 0.4em;
+            opacity: 0.7;
+            margin-top: 8px;
+            padding-left: 4px;
+        }
+        .part-text { flex: 1; padding-top: 8px; }
+        .part-title {
+            font-size: clamp(1.6rem, 4vw, 2.8rem);
+            font-weight: 700;
+            color: var(--text);
+            letter-spacing: -0.02em;
+            margin: 0 0 12px 0;
+        }
+        .part-intro {
+            font-size: clamp(0.95rem, 1.4vw, 1.05rem);
+            color: var(--text-5);
+            line-height: 1.6;
+            max-width: 640px;
+        }
+
+        /* ==================== SECTION ==================== */
+        section.sub {
+            padding: 56px 0;
+            border-bottom: 1px solid var(--border-soft);
+            scroll-margin-top: 60px;
+        }
+        .part-wrap > .container > section.sub:last-of-type { border-bottom: none; }
+
+        /* ==================== COVER ==================== */
+        .cover {
+            padding: 100px 0 80px 0;
+        }
+        .cover .logo {
+            font-size: 1.6rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            color: var(--logo);
+            margin-bottom: 40px;
+        }
+        .cover .logo span { color: var(--accent); }
+        .cover-sub {
+            font-size: clamp(1rem, 1.5vw, 1.2rem);
+            color: var(--text-muted);
+            margin-top: 16px;
+            font-weight: 500;
+        }
+        .cover-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 32px;
+        }
+        .cover-stack .pill {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            padding: 8px 18px;
+            border-radius: 100px;
+            font-size: clamp(0.82rem, 1.2vw, 0.95rem);
+            color: var(--text-3);
+        }
+        .cover-stack .pill strong { color: var(--logo); }
+        .gradient-text {
+            background: var(--heading-grad);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* ==================== CARDS ==================== */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+        .card {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 28px 24px;
+            transition: border-color 0.25s, background-color 0.3s;
+            box-shadow: var(--shadow-card);
+        }
+        .card:hover { border-color: var(--accent-border); }
+        .card .icon { font-size: 1.8rem; margin-bottom: 12px; }
+        .card h4 { color: var(--text); }
+        .card p { color: var(--text-5); font-size: 0.95rem; }
+
+        /* ==================== TEAM ==================== */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 24px;
+        }
+        .team-card {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px 20px;
+            box-shadow: var(--shadow-card);
+        }
+        .team-card .name { font-size: 1.2rem; font-weight: 700; color: var(--text); }
+        .team-card .title { font-size: 0.85rem; color: var(--accent); font-weight: 500; margin: 4px 0 12px 0; }
+        .team-card .bio { font-size: 0.9rem; color: var(--text-5); line-height: 1.7; }
+        .team-card .badge {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            background: var(--accent-soft-bg);
+            color: var(--accent-text);
+            padding: 2px 12px;
+            border-radius: 100px;
+            margin-top: 8px;
+        }
+
+        /* ==================== TABLE ==================== */
+        .table-wrap {
+            overflow-x: auto;
+            margin: 24px 0;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            -webkit-overflow-scrolling: touch;
+        }
+        table { width: 100%; border-collapse: collapse; font-size: 0.9rem; min-width: 560px; }
+        th {
+            background: var(--bg-elevated-2);
+            padding: 14px 16px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-3);
+            border-bottom: 1px solid var(--border);
+        }
+        td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border-soft);
+            color: var(--text-5);
+            vertical-align: top;
+        }
+        tr:last-child td { border-bottom: none; }
+        .table-wrap table td:first-child, .table-wrap table th:first-child { padding-left: 20px; }
+        .table-wrap table td:last-child, .table-wrap table th:last-child { padding-right: 20px; }
+
+        /* ==================== TIMELINE ==================== */
+        .timeline { display: flex; flex-wrap: wrap; gap: 20px; margin-top: 24px; }
+        .timeline-item {
+            flex: 1 1 180px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px 18px;
+            text-align: center;
+            box-shadow: var(--shadow-card);
+        }
+        .timeline-item .quarter { font-weight: 700; color: var(--accent); font-size: 0.85rem; letter-spacing: 0.04em; }
+        .timeline-item .milestone { font-size: 0.95rem; color: var(--text-2); margin: 8px 0; font-weight: 500; }
+        .timeline-item .detail { font-size: 0.8rem; color: var(--text-muted); }
+        .timeline-item .pct { font-size: 1.2rem; font-weight: 700; color: var(--accent); }
+
+        /* ==================== ARCHITECTURE DIAGRAM ==================== */
+        .arch-diagram {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            padding: 32px 16px;
+            background: var(--code-bg);
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            margin: 24px 0;
+            overflow-x: auto;
+        }
+        .arch-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; width: 100%; }
+        .arch-box {
+            background: var(--bg-elevated-2);
+            border: 1px solid var(--border-strong);
+            border-radius: 10px;
+            padding: 10px 18px;
+            font-size: 0.85rem;
+            color: var(--text-3);
+            text-align: center;
+            min-width: 80px;
+            font-weight: 500;
+        }
+        .arch-box.highlight {
+            border-color: var(--accent-border);
+            background: var(--accent-soft);
+            color: var(--text);
+        }
+        .arch-box.large { padding: 16px 28px; font-size: 1rem; font-weight: 600; }
+        .arch-box .sub { display: block; font-size: 0.65rem; font-weight: 400; color: var(--text-muted); margin-top: 4px; }
+        .arch-arrow { color: var(--accent); opacity: 0.5; font-size: 1.2rem; padding: 0 4px; }
+        .arch-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin: 4px 0;
+        }
+
+        /* ==================== HIGHLIGHT BLOCK ==================== */
+        .highlight-block {
+            background: var(--accent-soft);
+            border-left: 3px solid var(--accent);
+            padding: 24px 28px;
+            border-radius: 0 12px 12px 0;
+            margin: 24px 0;
+        }
+        .highlight-block p { color: var(--text-2); font-size: 1.05rem; }
+        .highlight-block ul { list-style: none; padding: 0; margin-top: 12px; color: var(--text-5); }
+        .highlight-block li { padding: 4px 0; }
+        .highlight-block li strong { color: var(--text); }
+
+        /* ==================== UTILITY CARDS ==================== */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 24px;
+        }
+        .info-card {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px 20px;
+            box-shadow: var(--shadow-card);
+        }
+        .info-card .label { font-size: 0.8rem; color: var(--text-muted); font-weight: 500; }
+        .info-card .value { color: var(--text-2); font-size: 0.95rem; margin-top: 6px; }
+
+        .tag-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 16px; }
+        .tag {
+            background: var(--accent-softer);
+            padding: 6px 16px;
+            border-radius: 100px;
+            font-size: 0.85rem;
+            color: var(--accent-text);
+        }
+
+        /* ==================== PRODUCT SHOTS ==================== */
+        .product-shots {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 28px;
+            margin-top: 28px;
+        }
+        .shot-item {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow-card);
+        }
+        .shot-item .shot-meta {
+            padding: 14px 20px 12px 20px;
+            border-bottom: 1px solid var(--border-soft);
+        }
+        .shot-item .shot-title { font-weight: 700; color: var(--text); font-size: 1rem; }
+        .shot-item .shot-caption { color: var(--text-muted); font-size: 0.8rem; margin-top: 2px; }
+        .shot-item .shot-img {
+            display: block;
+            width: 100%;
+            height: auto;
+            background: #0a0a0e;
+        }
+        .product-shots.cols-2 { grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); }
+
+        /* ==================== FLOW DIAGRAM ==================== */
+        .flow-diagram {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 20px 32px;
+            background: var(--code-bg);
+            border-radius: 16px;
+            padding: 32px 24px;
+            border: 1px solid var(--border);
+            margin-top: 40px;
+        }
+        .flow-node { text-align: center; min-width: 140px; }
+        .flow-node.boxed {
+            background: var(--bg-elevated);
+            padding: 12px 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+        .flow-node .flow-title { font-size: 1rem; font-weight: 600; color: var(--text-2); }
+        .flow-node .flow-desc { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
+        .flow-arrow { font-size: 1.4rem; color: var(--accent); opacity: 0.5; }
+
+        /* ==================== EXEC STEPS ==================== */
+        .exec-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-top: 24px;
+        }
+        .exec-step {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            position: relative;
+            box-shadow: var(--shadow-card);
+        }
+        .exec-step .step-num {
+            position: absolute;
+            top: 12px;
+            right: 16px;
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--accent);
+            opacity: 0.2;
+            line-height: 1;
+        }
+        .exec-step .step-title { font-weight: 700; color: var(--text); font-size: 1rem; }
+        .exec-step .step-desc { font-size: 0.85rem; color: var(--text-5); margin-top: 8px; line-height: 1.6; }
+
+        /* ==================== FINANCING ==================== */
+        .funding-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 24px;
+        }
+        .funding-card {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px 20px;
+            text-align: center;
+            box-shadow: var(--shadow-card);
+        }
+        .funding-card.primary {
+            background: var(--accent-soft);
+            border-color: var(--accent-border-soft);
+        }
+        .funding-card .label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--text-muted);
+        }
+        .funding-card .amount { font-size: 2.2rem; font-weight: 800; color: var(--text); margin: 8px 0; }
+        .funding-card .amount.secondary { font-size: 1.7rem; color: var(--text-2); }
+        .funding-card .amount.tertiary { font-size: 1.2rem; color: var(--text-2); }
+        .funding-card .status { font-size: 0.9rem; color: var(--text-5); }
+        .funding-card .note { font-size: 0.8rem; color: var(--text-muted); margin-top: 8px; }
+
+        .alloc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+            margin-top: 24px;
+        }
+        .alloc-card {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 18px 20px;
+            box-shadow: var(--shadow-card);
+        }
+        .alloc-card .pct { font-size: 1.5rem; font-weight: 800; color: var(--accent); }
+        .alloc-card .name { font-weight: 600; color: var(--text-2); margin-top: 4px; }
+
+        /* ==================== FOOTER ==================== */
+        .footer {
+            padding: 40px 0 60px 0;
+            text-align: center;
+            color: var(--text-dim);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border-soft);
+        }
+        .footer a { color: var(--accent); text-decoration: none; }
+
+        /* ==================== RESPONSIVE ==================== */
+        @media (max-width: 900px) {
+            .product-shots.cols-2 { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 768px) {
+            .container { padding: 0 18px; }
+            .chapter-nav { gap: 2px; padding: 10px 12px; overflow-x: auto; justify-content: flex-start; }
+            .chapter-nav::-webkit-scrollbar { display: none; }
+            .chapter-nav { scrollbar-width: none; }
+            .chapter-nav a { font-size: 0.78rem; padding: 5px 10px; }
+            .chapter-nav .nav-home { display: none; }
+            .part { padding: 56px 0 20px 0; }
+            .part-inner {
+                flex-direction: column;
+                gap: 8px;
+                align-items: flex-start;
+                padding-bottom: 20px;
+            }
+            .part-num {
+                font-size: 4rem;
+                line-height: 1;
+            }
+            .part-num .cn {
+                display: inline-block;
+                font-size: 0.3em;
+                margin-top: 0;
+                margin-left: 12px;
+                vertical-align: middle;
+            }
+            section.sub { padding: 36px 0; }
+            .cover { padding: 48px 0 36px 0; }
+            .cover .logo { margin-bottom: 24px; font-size: 1.4rem; }
+            .cover-stack { gap: 8px; margin-top: 24px; }
+            .cover-stack .pill { padding: 6px 14px; }
+            .team-grid { grid-template-columns: 1fr; gap: 16px; }
+            .card-grid { grid-template-columns: 1fr; gap: 16px; }
+            .info-grid { grid-template-columns: 1fr; }
+            .funding-grid { grid-template-columns: 1fr; gap: 14px; }
+            .alloc-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+            .alloc-card { padding: 14px 16px; }
+            .alloc-card .pct { font-size: 1.3rem; }
+            .timeline { flex-direction: column; gap: 14px; }
+            .arch-row { flex-direction: column; align-items: center; }
+            .arch-arrow { transform: rotate(90deg); }
+            .flow-diagram { gap: 16px; padding: 24px 16px; }
+            .flow-arrow { transform: rotate(90deg); }
+            .highlight-block { padding: 18px 20px; }
+            .highlight-block p { font-size: 0.95rem; }
+            h2 { margin-bottom: 18px; }
+            .exec-steps { grid-template-columns: 1fr; }
+            .funding-card .amount { font-size: 1.8rem; }
+            .funding-card .amount.secondary { font-size: 1.5rem; }
+            .shot-item .shot-meta { padding: 12px 16px; }
+            section.sub > p { font-size: 0.95rem; }
+        }
+        @media (max-width: 480px) {
+            .container { padding: 0 14px; }
+            .part-num { font-size: 3.2rem; }
+            .alloc-grid { grid-template-columns: 1fr; }
+            .cover { padding: 36px 0 28px 0; }
+            section.sub { padding: 28px 0; }
+            .part { padding: 44px 0 16px 0; }
+            .card { padding: 22px 18px; }
+            .team-card { padding: 20px 16px; }
+            .timeline-item { padding: 18px 14px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== CHAPTER NAV ==================== -->
+    <nav class="chapter-nav">
+        <a href="#top" class="nav-home">Soloco<span style="color:var(--accent)">.</span></a>
+        <a href="#part-1" data-nav>I · Industry</a>
+        <a href="#part-2" data-nav>II · Team</a>
+        <a href="#part-3" data-nav>III · Product</a>
+        <a href="#part-4" data-nav>IV · Roadmap</a>
+        <a href="#part-5" data-nav>V · Funding</a>
+        <div class="theme-toggle" role="group" aria-label="Theme toggle">
+            <button data-theme-set="light" title="Light" aria-label="Light">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+            </button>
+            <button data-theme-set="auto" title="Auto (system)" aria-label="Auto (system)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+            </button>
+            <button data-theme-set="dark" title="Dark" aria-label="Dark">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- ==================== COVER ==================== -->
+    <div class="part-wrap bg-base" id="top">
+        <div class="container">
+            <header class="cover">
+                <div class="logo">Soloco<span>.</span></div>
+                <h1>From productivity software<br />to <span class="gradient-text">AI Native Company OS</span></h1>
+                <div class="cover-stack">
+                    <span class="pill"><strong>Productivity</strong> → Organization</span>
+                    <span class="pill"><strong>AI Assistant</strong> → One-Person Company</span>
+                    <span class="pill"><strong>Personal OS</strong> → AI Native Company OS</span>
+                </div>
+                <p class="cover-sub">The operating system for the next generation of AI-native organizations.</p>
+            </header>
+        </div>
+    </div>
+
+    <!-- ==================== PART 1 (alt bg) ==================== -->
+    <div class="part-wrap bg-alt" id="part-1">
+        <div class="container">
+            <div class="part">
+                <div class="part-inner">
+                    <div class="part-num">01<span class="cn">I</span></div>
+                    <div class="part-text">
+                        <div class="part-title">Industry Background</div>
+                        <div class="part-intro">Organizational form is changing generations — this is not just an AI tool upgrade. In the future, the execution layer of a company will be entirely Agents; humans only manage.</div>
+                    </div>
+                </div>
+            </div>
+
+            <section class="sub" id="sec-1-1">
+                <div class="section-tag">§1.1</div>
+                <h2>Organizational form is changing generations</h2>
+                <p style="font-size:1.15rem;color:var(--text-3);margin-bottom:24px;font-weight:500;">For the past 200 years, every aspect of company design has been built to compensate for the limits of "humans as executors."</p>
+
+                <div class="card-grid">
+                    <div class="card">
+                        <div class="icon">🧠</div>
+                        <h4>Human limits</h4>
+                        <p>Humans tire → shifts &amp; rotations<br />Information bottlenecks → meetings &amp; syncs<br />Specialty boundaries → department silos<br />Hiring cycles → headcount budgets<br />Turnover → knowledge management</p>
+                    </div>
+                    <div class="card">
+                        <div class="icon">🤖</div>
+                        <h4>Agent advantages</h4>
+                        <p>No fatigue · No information bottlenecks<br />No specialty boundaries · No hiring cycles<br />No turnover · Knowledge accumulates continuously</p>
+                    </div>
+                    <div class="card">
+                        <div class="icon">⚡</div>
+                        <h4>The trigger for restructuring</h4>
+                        <p>Last time: workshops → industrial corporations<br />This time: LLMs → AI-native organizations<br />Flatter · More dynamic · More elastic</p>
+                    </div>
+                </div>
+
+                <div class="highlight-block">
+                    <p><strong>The future company we want to see:</strong></p>
+                    <ul>
+                        <li>• <strong>Execution layer</strong>: specialized AI Agents, each taking on the function of an entire team</li>
+                        <li>• <strong>Management layer</strong>: a small group of humans providing vision, key calls, external relations, and value judgments</li>
+                        <li>• <strong>Interface layer</strong>: natural language. The boss states a goal; the organization decomposes it into agent-executable task chains</li>
+                        <li>• <strong>Structure</strong>: no longer a pyramid, but a "task orchestration graph" that dynamically reorganizes around goals</li>
+                    </ul>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-card">
+                        <div class="label">New core problems</div>
+                        <div class="value">Agent permissions · Task chain GO / NO-GO<br />Human approval vs. Orchestrator authorization<br />SOP stability → autonomous iteration</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="label">New foundation</div>
+                        <div class="value">Soloco — AI Native Company OS</div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="sub" id="sec-1-2">
+                <div class="section-tag">§1.2</div>
+                <h2>Reference Practice</h2>
+                <p style="color:var(--text-5);margin-bottom:24px;">Driving an autonomous-driving company as an AI-native company — no one needs to hand-write another line of code.</p>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr><th>Domain</th><th>Team Size</th><th>SOP / Workload</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Simulation / Test</strong></td>
+                                <td>10–25 people</td>
+                                <td>debug / normal / worldsim batch simulation · Pre/Post-merge Argo Workflow monitoring · failed-job retrigger · config/worldsim/*.pb.txt scenario maintenance · data_cli topic whitelist filtering · CI root-cause analysis → batch simulation orchestration → automatic scenario library expansion</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Build / Infra</strong></td>
+                                <td>5–15 people</td>
+                                <td>Bazel BUILD maintenance (cc_library / txm_proto / txm_image) · MODULE.bazel dependency upgrades · bazel run //:format · Argo Workflow YAML tuning · GitHub Status Context config · auto-generated BUILD files → automatic dependency conflict resolution → continuous CI time optimization</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Data / Record</strong></td>
+                                <td>5–10 people</td>
+                                <td>data_cli download → include-topic-names / topic_name_whitelist orchestration · record_info.json schema validation · record/index integrity scans · TopicFileHeader compression checks · automated dataset assembly → automatic quarantine of abnormal records → automated index repair</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="tag-row">
+                    <span class="tag">bazel</span>
+                    <span class="tag">argo workflow</span>
+                    <span class="tag">replay</span>
+                    <span class="tag">CI</span>
+                    <span class="tag">auto-generated DBC</span>
+                    <span class="tag">parameter identification</span>
+                </div>
+                <p style="color:var(--text-muted);margin-top:16px;font-size:0.95rem;">Outputs are batch-verifiable: numerical comparison, regression tests, coverage metrics — AI outputs are machine-checkable, enabling fast continuous iteration.</p>
+            </section>
+        </div>
+    </div>
+
+    <!-- ==================== PART 2 (base bg) ==================== -->
+    <div class="part-wrap bg-base" id="part-2">
+        <div class="container">
+            <div class="part">
+                <div class="part-inner">
+                    <div class="part-num">02<span class="cn">II</span></div>
+                    <div class="part-text">
+                        <div class="part-title">Team</div>
+                        <div class="part-intro">A core team with exceptional learning velocity, burning 100M+ tokens per day, with combined backgrounds across industry, academia, research, and finance.</div>
+                    </div>
+                </div>
+            </div>
+
+            <section class="sub" id="sec-2-1">
+                <div class="section-tag">§2.1</div>
+                <h2>Core Team</h2>
+
+                <div class="team-grid">
+                    <div class="team-card">
+                        <div class="name">Mingyu Li</div>
+                        <div class="title">Founder &amp; CEO</div>
+                        <div class="bio">
+                            M.Sc., Nanyang Technological University, Singapore. Vice President of the Jiangsu Alumni Association. Serial entrepreneur with deep experience in AI applications. Co-founded the AI energy-efficiency company Arloid. Ten-year Bitcoin investor / holder. Previously interned at MiraclePlus and AVA Labs. Researched GPT-3 commercialization at MiraclePlus in 2020. Built an Agent + cryptoquant business to ~70M RMB scale.
+                        </div>
+                        <span class="badge">Serial Entrepreneur · AI Applications</span>
+                    </div>
+
+                    <div class="team-card">
+                        <div class="name">Tianyi Zhang</div>
+                        <div class="title">Founder &amp; CTO</div>
+                        <div class="bio">
+                            700 / 750 on the Gaokao, full scholarship to the joint engineering undergraduate program at the University of Hong Kong and the University of Cambridge. M.S. in Robotics and Control at Columbia University. Former Assistant Researcher at Columbia. Worked at NASA on International Space Station projects. Former Senior Algorithm Engineer at a top autonomous-driving company and head of its Agent Technology Committee. Long-time focus on the design, deployment, and production-grade application of enterprise private-domain AI Agents.
+                        </div>
+                        <span class="badge">NASA · Autonomous Driving · Agent Tech Committee</span>
+                    </div>
+
+                    <div class="team-card">
+                        <div class="name">Bei Yi</div>
+                        <div class="title">Chief Scientist</div>
+                        <div class="bio">
+                            M.Sc. in Theoretical Computer Science, University of Oxford / Ph.D. in Mathematics, Imperial College London (model theory / graph theory). Postdoctoral fellow in Physics at Tsinghua University. Zhongguancun U30. GGV Fellow. Former co-founder of Xide Quest. Leads theoretical research at the intersection of graph theory and multi-agent orchestration, and the engineering productization of frontier research.
+                        </div>
+                        <span class="badge">Oxford · Imperial · Graph Theory + Multi-Agent</span>
+                    </div>
+
+                    <div class="team-card">
+                        <div class="name">Shangzi Xie</div>
+                        <div class="title">Director of Engineering</div>
+                        <div class="bio">
+                            M.S., Columbia University. At Huawei, led a 10-person team on LLM inference acceleration, KVCache prefix storage, and high-performance C++ systems. Previously held technical manager roles at HSBC, VMware, Tencent, and Huawei, spanning AI infrastructure, distributed databases, cloud-native, and full-stack development. 15+ patents and 1 top-tier conference publication.
+                        </div>
+                        <span class="badge">Huawei · LLM Inference Acceleration · 15+ Patents</span>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- ==================== PART 3 (alt bg) ==================== -->
+    <div class="part-wrap bg-alt" id="part-3">
+        <div class="container">
+            <div class="part">
+                <div class="part-inner">
+                    <div class="part-num">03<span class="cn">III</span></div>
+                    <div class="part-text">
+                        <div class="part-title">Product</div>
+                        <div class="part-intro">From data takeover to CLI routing — distilling the best SOPs into atomic, self-evolving organizational modules.</div>
+                    </div>
+                </div>
+            </div>
+
+            <section class="sub" id="sec-3-1">
+                <div class="section-tag">§3.1</div>
+                <h2>Product Architecture</h2>
+                <p style="color:var(--text-5);margin-bottom:24px;">From data takeover to CLI routing — distilling the best SOPs into atomic, self-evolving organizational modules.</p>
+
+                <div class="arch-diagram">
+                    <div class="arch-row">
+                        <div class="arch-box large highlight">AI Company OS — running autonomously</div>
+                    </div>
+                    <div class="arch-row">
+                        <div class="arch-box">Organizational Memory</div>
+                        <div class="arch-box highlight">Organizational Atomization</div>
+                        <div class="arch-box">Organizational Self-Evolution</div>
+                    </div>
+                    <div class="arch-label">↑ Best-in-Class Vertical SOPs ↑</div>
+
+                    <div class="arch-row" style="border-top:1px solid var(--border);padding-top:16px;border-bottom:1px solid var(--border);padding-bottom:16px;">
+                        <div class="arch-box">Claude</div>
+                        <div class="arch-box">Goose</div>
+                        <div class="arch-box">Minimax</div>
+                        <div class="arch-box">Kimi</div>
+                        <div class="arch-box">Zhipu</div>
+                        <div class="arch-box">DeepSeek</div>
+                    </div>
+                    <div class="arch-label">CLI Orchestration Layer</div>
+                    <div class="arch-arrow">↓</div>
+                    <div class="arch-row">
+                        <div class="arch-box large">soloco</div>
+                    </div>
+                    <div class="arch-arrow">↑ takeover ↑</div>
+                    <div class="arch-row" style="border-top:1px solid var(--border);padding-top:16px;">
+                        <div class="arch-box">AI-native company<br /><span class="sub">data capture</span></div>
+                        <div class="arch-box">Vision / Mission</div>
+                        <div class="arch-box">Budget<br /><span class="sub">tokens / ops budget</span></div>
+                    </div>
+                </div>
+
+                <div class="flow-diagram">
+                    <div class="flow-node">
+                        <div class="flow-title">Long-Range Goal</div>
+                    </div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-node boxed">
+                        <div class="flow-title">Organization Bootstrapping</div>
+                        <div class="flow-desc">AI-driven AI organizations · multi-agent cross-review<br />Automatic team formation · best-in-class skills matched globally</div>
+                    </div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-node boxed">
+                        <div class="flow-title">Organization Retention</div>
+                        <div class="flow-desc">Reuse · Board oversight<br />Manual hiring · hire and fire</div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="sub" id="sec-3-2">
+                <div class="section-tag">§3.2</div>
+                <h2>Goal · Budget · Execution Model</h2>
+                <p style="color:var(--text-5);margin-bottom:24px;">From a single-sentence goal stated by the boss to executable task chains and budget consumption across an Agent cluster.</p>
+
+                <div class="exec-steps">
+                    <div class="exec-step">
+                        <div class="step-num">01</div>
+                        <div class="step-title">Goal Input</div>
+                        <div class="step-desc">The boss states a goal in natural language; the organization parses it into an executable long-range goal plus constraints.</div>
+                    </div>
+                    <div class="exec-step">
+                        <div class="step-num">02</div>
+                        <div class="step-title">Budget Allocation</div>
+                        <div class="step-desc">Tokens and operating budget are automatically allocated across the task chain, with overrun alerts and decision holds when budget is exhausted.</div>
+                    </div>
+                    <div class="exec-step">
+                        <div class="step-num">03</div>
+                        <div class="step-title">Execution Mode</div>
+                        <div class="step-desc">CLI orchestration routes to different models; multi-Agent collaboration with cross-review; critical nodes escalate to HITL.</div>
+                    </div>
+                </div>
+
+                <div class="product-shots">
+                    <figure class="shot-item">
+                        <div class="shot-meta">
+                            <div class="shot-title">Console · Goal / Budget / Workspace</div>
+                            <div class="shot-caption">Enter a goal, configure budget caps and execution model — Soloco takes over from there.</div>
+                        </div>
+                        <img class="shot-img" src="assets/slide08_00.png" alt="Soloco console — goal, budget, current goal list" loading="lazy" />
+                    </figure>
+                </div>
+            </section>
+
+            <section class="sub" id="sec-3-3">
+                <div class="section-tag">§3.3</div>
+                <h2>Touch your organization on the canvas</h2>
+                <p style="color:var(--text-5);margin-bottom:24px;">Your organization is visualized as a canvas — nodes are Agents, edges are task dependencies, state is synced in real time.</p>
+
+                <div class="product-shots">
+                    <figure class="shot-item">
+                        <div class="shot-meta">
+                            <div class="shot-title">Organization Canvas · Real-Time State</div>
+                            <div class="shot-caption">The main Conductor dispatches sub-Agents — state, model, and consumption are visible at a glance.</div>
+                        </div>
+                        <img class="shot-img" src="assets/slide10_00.png" alt="Soloco organization canvas — Conductor and sub-Agent node view" loading="lazy" />
+                    </figure>
+                </div>
+            </section>
+
+            <section class="sub" id="sec-3-4">
+                <div class="section-tag">§3.4</div>
+                <h2>Decompose · Direct · Dispatch</h2>
+                <p style="color:var(--text-5);margin-bottom:24px;">From a one-sentence goal to an Agent team execution chain.</p>
+
+                <div class="exec-steps">
+                    <div class="exec-step">
+                        <div class="step-num">①</div>
+                        <div class="step-title">Decompose</div>
+                        <div class="step-desc">Goal → task chain: long-range goals split into independently executable, verifiable sub-tasks.</div>
+                    </div>
+                    <div class="exec-step">
+                        <div class="step-num">②</div>
+                        <div class="step-title">Direct</div>
+                        <div class="step-desc">Conductor dispatches · multi-Agent collaboration with cross-Agent review.</div>
+                    </div>
+                    <div class="exec-step">
+                        <div class="step-num">③</div>
+                        <div class="step-title">Dispatch &amp; Execute</div>
+                        <div class="step-desc">Auto-formed Agent teams · best-in-class skills matched globally · modular retention.</div>
+                    </div>
+                </div>
+
+                <div class="product-shots">
+                    <figure class="shot-item">
+                        <div class="shot-meta">
+                            <div class="shot-title">Timeline · Node Trajectory</div>
+                            <div class="shot-caption">Dispatch order, dependencies, and runtime for every Agent node — visible in one chart.</div>
+                        </div>
+                        <img class="shot-img" src="assets/slide09_00.png" alt="Soloco timeline — Agent node dispatch trajectory" loading="lazy" />
+                    </figure>
+                </div>
+            </section>
+
+            <section class="sub" id="sec-3-5">
+                <div class="section-tag">§3.5</div>
+                <h2>Process · Audit · Settlement &amp; Delivery</h2>
+                <p style="color:var(--text-5);margin-bottom:24px;">Every step is observable, every charge is settle-able, every output is delivery-ready.</p>
+
+                <div class="exec-steps">
+                    <div class="exec-step">
+                        <div class="step-num">①</div>
+                        <div class="step-title">Process</div>
+                        <div class="step-desc">Real-time progress sync: what each Agent is currently doing, where it is blocked, and when it is expected to finish.</div>
+                    </div>
+                    <div class="exec-step">
+                        <div class="step-num">②</div>
+                        <div class="step-title">Audit</div>
+                        <div class="step-desc">Every Agent decision is traceable: prompts, inputs, outputs, and key judgment points are all logged.</div>
+                    </div>
+                    <div class="exec-step">
+                        <div class="step-num">③</div>
+                        <div class="step-title">Settlement &amp; Delivery</div>
+                        <div class="step-desc">Real-time token settlement · automatic archiving of outputs · replay and reuse supported.</div>
+                    </div>
+                </div>
+
+                <div class="product-shots">
+                    <figure class="shot-item">
+                        <div class="shot-meta">
+                            <div class="shot-title">Sub-Agent Detail · File Changes &amp; Sub-Runs</div>
+                            <div class="shot-caption">Outputs, file diffs, and sub-run records of every Agent — fully replayable.</div>
+                        </div>
+                        <img class="shot-img" src="assets/slide11_00.png" alt="Soloco sub-Agent detail — file changes and sub-runs" loading="lazy" />
+                    </figure>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- ==================== PART 4 (base bg) ==================== -->
+    <div class="part-wrap bg-base" id="part-4">
+        <div class="container">
+            <div class="part">
+                <div class="part-inner">
+                    <div class="part-num">04<span class="cn">IV</span></div>
+                    <div class="part-text">
+                        <div class="part-title">Roadmap</div>
+                        <div class="part-intro">Open-source the takeover tool; monetize through personal monthly subscriptions and enterprise workspaces.</div>
+                    </div>
+                </div>
+            </div>
+
+            <section class="sub" id="sec-4-1">
+                <div class="section-tag">§4.1</div>
+                <h2>Commercialization</h2>
+
+                <div class="highlight-block">
+                    <p>Use the open-source takeover tool to acquire a high-density base of early users, then convert through personal subscriptions, enterprise workspaces, and AI-native transformation consulting for enterprises.</p>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-card">
+                        <div class="label">Initial User Profile</div>
+                        <div class="value">
+                            Claude Max subscribers and API users<br />
+                            Codex Pro subscribers and API users<br />
+                            Heads of newly-formed OPCs &amp; power-user developers<br />
+                            Vibe-coding power users<br />
+                            Fast-moving frontier tech companies (e.g. embodied intelligence) eager to adopt new tech
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <div class="label">Pricing Model</div>
+                        <div class="value">
+                            Local deployment · connects to the user's own CLI<br />
+                            Software subscription at ¥29 / $9.9 per month<br />
+                            Enterprise customized deployment · Soloco-powered data &amp; AI-native transformation consulting and end-to-end enterprise agent solutions
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- ==================== PART 5 (alt bg) ==================== -->
+    <div class="part-wrap bg-alt" id="part-5">
+        <div class="container">
+            <div class="part">
+                <div class="part-inner">
+                    <div class="part-num">05<span class="cn">V</span></div>
+                    <div class="part-text">
+                        <div class="part-title">Funding</div>
+                        <div class="part-intro">Seed round closed. Now opening a small allocation; targeting 2026 ARR of ¥5M.</div>
+                    </div>
+                </div>
+            </div>
+
+            <section class="sub" id="sec-5-1">
+                <div class="section-tag">§5.1</div>
+                <h2>Revenue Forecast &amp; Funding Plan</h2>
+
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="quarter">2026-Q2</div>
+                        <div class="pct">Closed</div>
+                        <div class="milestone">Seed round closed</div>
+                        <div class="detail">Seed round of ¥10M closed<br />Product launch and promotion, continued R&amp;D investment, version iteration, and build-out of the org and hiring</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="quarter">2026-Q3</div>
+                        <div class="pct">¥20M</div>
+                        <div class="milestone">Small allocation round planned</div>
+                        <div class="detail">Planned raise of ¥20M<br />Continued product iteration; sign 5 well-known enterprise customers<br />Enterprise contract revenue of ¥500K · 30,000 registered users</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="quarter">2026-Q4</div>
+                        <div class="pct">Pre-A</div>
+                        <div class="milestone">Launch Pre-A round</div>
+                        <div class="detail">Continued product iteration<br />Achieve YoY ARR of ¥5M<br />Sign multiple large enterprise customers; sustained growth in C-end and SMB users</div>
+                    </div>
+                </div>
+
+                <h3 style="margin-top:48px;">Funding Amount &amp; Goals</h3>
+                <div class="funding-grid">
+                    <div class="funding-card primary">
+                        <div class="label">Seed Round</div>
+                        <div class="amount">¥10M</div>
+                        <div class="status">Closed</div>
+                        <div class="note">Seed round of ¥10M completed</div>
+                    </div>
+                    <div class="funding-card">
+                        <div class="label">Small Allocation</div>
+                        <div class="amount secondary">¥20M</div>
+                        <div class="status">Planned raise</div>
+                        <div class="note">Small-allocation round of ¥20M planned</div>
+                    </div>
+                    <div class="funding-card">
+                        <div class="label">2026 Target</div>
+                        <div class="amount tertiary">ARR ¥5M</div>
+                        <div class="status">Enterprise contracts · user growth</div>
+                        <div class="note">Large enterprise customers + C-end ecosystem</div>
+                    </div>
+                </div>
+
+                <h3 style="margin-top:48px;">Use of Funds</h3>
+                <div class="alloc-grid">
+                    <div class="alloc-card">
+                        <div class="pct">60%</div>
+                        <div class="name">Talent Acquisition</div>
+                    </div>
+                    <div class="alloc-card">
+                        <div class="pct">15%</div>
+                        <div class="name">Tokens / Subscriptions</div>
+                    </div>
+                    <div class="alloc-card">
+                        <div class="pct">15%</div>
+                        <div class="name">Company Operations</div>
+                    </div>
+                    <div class="alloc-card">
+                        <div class="pct">10%</div>
+                        <div class="name">Marketing &amp; Growth</div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- ==================== FOOTER ==================== -->
+    <div class="part-wrap bg-base">
+        <div class="container">
+            <div class="footer">
+                Soloco. — AI Native Company OS<br />
+                <span style="font-size:0.75rem;color:var(--text-dim);">© 2026 · From vision to output — straight-line acceleration</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== THEME SWITCHING ====================
+        (function () {
+            var STORAGE_KEY = 'soloco-theme';
+            var mq = window.matchMedia('(prefers-color-scheme: light)');
+
+            function apply(pref) {
+                var resolved = pref;
+                if (pref === 'auto') {
+                    resolved = mq.matches ? 'light' : 'dark';
+                }
+                document.documentElement.dataset.theme = resolved;
+                document.documentElement.dataset.themePref = pref;
+                document.querySelectorAll('[data-theme-set]').forEach(function (btn) {
+                    btn.classList.toggle('active', btn.dataset.themeSet === pref);
+                });
+            }
+
+            var saved = localStorage.getItem(STORAGE_KEY) || 'auto';
+            apply(saved);
+
+            document.querySelectorAll('[data-theme-set]').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var pref = btn.dataset.themeSet;
+                    localStorage.setItem(STORAGE_KEY, pref);
+                    apply(pref);
+                });
+            });
+
+            mq.addEventListener('change', function () {
+                if ((localStorage.getItem(STORAGE_KEY) || 'auto') === 'auto') {
+                    apply('auto');
+                }
+            });
+        })();
+
+        // ==================== ACTIVE NAV LINK ====================
+        (function () {
+            var sections = document.querySelectorAll('.part-wrap[id^="part-"]');
+            var links = document.querySelectorAll('.chapter-nav a[data-nav]');
+            if (!('IntersectionObserver' in window) || !sections.length) return;
+
+            var byId = {};
+            links.forEach(function (a) { byId[a.getAttribute('href').slice(1)] = a; });
+
+            var visible = new Set();
+            function updateActive() {
+                var current = null;
+                sections.forEach(function (s) {
+                    if (!visible.has(s.id)) return;
+                    if (!current) { current = s; return; }
+                    if (s.getBoundingClientRect().top < current.getBoundingClientRect().top) current = s;
+                });
+                if (!current) {
+                    var best = null, bestTop = -Infinity;
+                    sections.forEach(function (s) {
+                        var top = s.getBoundingClientRect().top;
+                        if (top <= 80 && top > bestTop) { bestTop = top; best = s; }
+                    });
+                    current = best;
+                }
+                links.forEach(function (l) { l.classList.remove('active'); });
+                if (current && byId[current.id]) byId[current.id].classList.add('active');
+            }
+
+            var observer = new IntersectionObserver(function (entries) {
+                entries.forEach(function (e) {
+                    if (e.isIntersecting) visible.add(e.target.id);
+                    else visible.delete(e.target.id);
+                });
+                updateActive();
+            }, { rootMargin: '-60px 0px -40% 0px' });
+
+            sections.forEach(function (s) { observer.observe(s); });
+            var ticking = false;
+            window.addEventListener('scroll', function () {
+                if (!ticking) {
+                    requestAnimationFrame(function () { updateActive(); ticking = false; });
+                    ticking = true;
+                }
+            }, { passive: true });
+            updateActive();
+        })();
+    </script>
+</body>
+</html>
