@@ -493,6 +493,31 @@
 .md-name { font-size: 12px; font-weight: 500; }
 .md-amt { font-size: 12px; color: var(--muted-foreground); }
 
+/* ---- $10M capital plan + AI-vs-consulting comparison (途虎) ---- */
+.compare-strip { display: flex; align-items: stretch; gap: 0; background: linear-gradient(180deg, color-mix(in oklch, var(--card), #fff 16%), var(--card)); border: 1px solid var(--border); border-radius: 16px; padding: 18px 22px; margin-bottom: 26px; }
+.cmp-col { flex: 1; display: flex; flex-direction: column; gap: 3px; }
+.cmp-col.muted { opacity: 0.72; }
+.cmp-tag { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted-foreground); }
+.cmp-big { font-size: 30px; font-weight: 700; letter-spacing: -0.02em; color: var(--primary); }
+.cmp-col.muted .cmp-big { color: var(--foreground); }
+.cmp-sub { font-size: 12px; color: var(--muted-foreground); }
+.cmp-vs { align-self: center; font-size: 12px; color: var(--muted-foreground); padding: 0 22px; }
+
+.capital-years { display: flex; gap: 12px; margin-bottom: 18px; }
+.cap-year { flex: 1; background: var(--muted); border-radius: 12px; padding: 13px 14px; }
+.cy-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 9px; }
+.cy-k { font-size: 12px; font-weight: 600; }
+.cy-v { font-size: 17px; font-weight: 700; color: var(--primary); }
+.cy-track { height: 6px; background: color-mix(in oklch, var(--border-strong), transparent 35%); border-radius: 999px; overflow: hidden; }
+.cy-fill { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, color-mix(in oklch, var(--primary), var(--info) 30%), var(--primary)); transition: width var(--duration-slow) var(--ease-out-soft); }
+.cy-note { font-size: 10px; color: var(--muted-foreground); margin-top: 8px; line-height: 1.4; }
+.capital-funcs { display: flex; flex-direction: column; gap: 9px; }
+.cap-func { display: flex; align-items: center; gap: 12px; }
+.cf-k { font-size: 12.5px; width: 220px; flex-shrink: 0; }
+.cf-track { flex: 1; height: 8px; background: var(--muted); border-radius: 999px; overflow: hidden; }
+.cf-fill { display: block; height: 100%; border-radius: 999px; background: var(--primary); transition: width var(--duration-slow) var(--ease-out-soft); }
+.cf-v { font-size: 12px; font-weight: 600; width: 56px; text-align: right; flex-shrink: 0; }
+
 /* ============================================================
    COMPOSER · model picker + grant-folder button
    ============================================================ */

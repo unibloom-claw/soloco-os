@@ -5,18 +5,32 @@ const { company: CO, conductor: COND, agents: AGENTS, distillers: DISTILLERS, kg
 const ORGS = window.SOLOCO_ORGS;
 const EXTRA = [...DISTILLERS, KGRAPH];
 const STATIC = [CO && { ...CO, kind: "company", x: 388, y: 20, w: 224 }, COND, ...AGENTS, ...EXTRA].filter(Boolean);
-const byId = Object.fromEntries(STATIC.map((n) => [n.id, n]));
 const SALARY_IDS = AGENTS.map((a) => a.id);
 const DISTILL_IDS = [...DISTILLERS.map((d) => d.id), KGRAPH.id];
+
+/* ---- flagship scenario: 途虎 · 全球化战略（默认头牌） ---- */
+const TUHU = window.TUHU_DATA;
+const TCO = { ...TUHU.company, kind: "company", x: 300, y: 0, w: 210 };
+const TUHU_STATIC = [TCO, TUHU.conductor, ...TUHU.agents];
+const isLive = (o) => o === "tuhu" || o === "primary";
+
+const byId = Object.fromEntries([...STATIC, ...TUHU_STATIC].map((n) => [n.id, n]));
+
 const initNs = () => {
   const o = {};
-  for (const a of [...AGENTS, ...EXTRA]) o[a.id] = { status: "idle", hidden: !!a.hidden };
+  for (const a of [...AGENTS, ...EXTRA, ...TUHU.agents]) o[a.id] = { status: "idle", hidden: !!a.hidden };
   o[COND.id] = { status: "idle" };
   o[CO.id] = { status: "idle" };
+  o[TUHU.conductor.id] = { status: "idle" };
+  o[TCO.id] = { status: "idle" };
   return o;
 };
 
 const GREET_PRIMARY = "嗨，我是指挥官。告诉我你想达成什么目标，我会现场招聘 Agent、把协作流程画在左边的画布上，然后开始干活。哪怕只是一句模糊的想法也行。";
+const SALARY_INIT_SUGG = [
+  { label: "授权本机资料 · 先蒸馏成知识图谱", text: "我先授权一个本机文件夹，让你把里面的资料蒸馏成知识图谱", icon: "\uD83D\uDCC2", primary: true, action: "authorize" },
+  { label: "创建薪酬分析组织 · 对比三城市产品经理薪酬", text: "帮我创建一个薪酬分析组织，对比北京、上海、深圳三个城市的产品经理薪酬", icon: "🎯", action: "create" },
+];
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 let MID = 0;
@@ -28,7 +42,7 @@ function App() {
   const [settingsOpen, setSettingsOpen] = React.useState(false);
   const [orgMenuOpen, setOrgMenuOpen] = React.useState(false);
 
-  const [activeOrg, setActiveOrg] = React.useState("primary");
+  const [activeOrg, setActiveOrg] = React.useState("tuhu");
   const [view, setView] = React.useState("canvas"); // canvas | roster | costs
 
   const [sceneEmpty, setSceneEmpty] = React.useState(true);
@@ -36,6 +50,13 @@ function App() {
   const [entered, setEntered] = React.useState(false);
   const [flowMode, setFlowMode] = React.useState("serial"); // serial | conditional
   const [activeKey, setActiveKey] = React.useState(null);
+
+  // 途虎 flagship scenario state
+  const [tEmpty, setTEmpty] = React.useState(true);
+  const [tEntered, setTEntered] = React.useState(false);
+  const [tMode, setTMode] = React.useState("serial"); // serial | reroute（收购+合资）
+  const [tDone, setTDone] = React.useState(false);
+  const tuhuResume = React.useRef(null);
 
   // model picker (conductor) — multi-vendor
   const [convModel, setConvModel] = React.useState("Opus 4.8");
@@ -52,6 +73,7 @@ function App() {
   const setNS = (id, patch) => setNs((s) => ({ ...s, [id]: { ...s[id], ...patch } }));
 
   const [threads, setThreads] = React.useState({
+    tuhu: [{ id: mid(), role: "bot", text: TUHU.greeting, typed: false }],
     primary: [{ id: mid(), role: "bot", text: GREET_PRIMARY, typed: false }],
     "org-growth": [{ id: mid(), role: "bot", text: "这里是「增长实验室」。3 名 Agent 常驻，渠道分析师正在跑本周的渠道 ROI。想调整增长策略，直接跟我说。", typed: true }],
     "org-content": [{ id: mid(), role: "bot", text: "这里是「内容工厂」。选题、脚本、剪辑三条岗位已就位，给我一个方向，我就排一周的内容。", typed: true }],
@@ -63,10 +85,7 @@ function App() {
   const [selectedId, setSelectedId] = React.useState(null);
   const [now, setNow] = React.useState(Date.now());
 
-  const [suggestions, setSuggestions] = React.useState([
-    { label: "授权本机资料 · 先蒸馏成知识图谱", text: "我先授权一个本机文件夹，让你把里面的资料蒸馏成知识图谱", icon: "\uD83D\uDCC2", primary: true, action: "authorize" },
-    { label: "创建薪酬分析组织 · 对比三城市产品经理薪酬", text: "帮我创建一个薪酬分析组织，对比北京、上海、深圳三个城市的产品经理薪酬", icon: "🎯", action: "create" },
-  ]);
+  const [suggestions, setSuggestions] = React.useState(TUHU.flow.suggestionsInit);
 
   const busyRef = React.useRef(busy);
   busyRef.current = busy;
@@ -91,7 +110,7 @@ function App() {
   const markTyped = (id) => setThreads((t) => ({ ...t, [activeOrg]: t[activeOrg].map((m) => (m.id === id ? { ...m, typed: true } : m)) }));
 
   /* ---------- merged nodes ---------- */
-  const nodes = STATIC.map((n) => {
+  const mergeLive = (arr) => arr.map((n) => {
     const s = ns[n.id] || {};
     let dur = s.dur, cost = s.cost;
     if (s.status === "running" && s.startTs) {
@@ -101,10 +120,41 @@ function App() {
     }
     return { ...n, ...s, dur, cost };
   });
+  const nodes = mergeLive(STATIC);
+  const tuhuNodes = mergeLive(TUHU_STATIC);
 
   /* ---------- edges ---------- */
   const edges = React.useMemo(() => {
     let E = [];
+    if (activeOrg === "tuhu") {
+      E = [
+        { from: "tuhu-co", to: "tuhu-cond", kind: "down" },
+        { from: "tuhu-cond", to: "t-market", kind: "dispatch", type: "dispatch" },
+        { from: "tuhu-cond", to: "t-entry", kind: "dispatch", type: "dispatch" },
+        { from: "tuhu-cond", to: "t-legal", kind: "dispatch", type: "dispatch" },
+        { from: "tuhu-cond", to: "t-ops", kind: "dispatch", type: "dispatch" },
+        { from: "tuhu-cond", to: "t-risk", kind: "dispatch", type: "dispatch" },
+        { from: "tuhu-cond", to: "t-brand", kind: "dispatch", type: "dispatch" },
+        { from: "tuhu-cond", to: "t-finance", kind: "dispatch", type: "dispatch" },
+        { from: "tuhu-cond", to: "t-synth", kind: "dispatch", type: "dispatch" },
+        { from: "t-market", to: "t-entry", kind: "flow-h" },
+        { from: "t-entry", to: "t-legal", kind: "flow-h" },
+        { from: "t-entry", to: "t-ops", kind: "flow-h" },
+        { from: "t-entry", to: "t-risk", kind: "flow-h" },
+        { from: "t-entry", to: "t-brand", kind: "flow-h" },
+        { from: "t-legal", to: "t-finance", kind: "flow-h" },
+        { from: "t-ops", to: "t-finance", kind: "flow-h" },
+        { from: "t-risk", to: "t-finance", kind: "flow-h" },
+        { from: "t-brand", to: "t-finance", kind: "flow-h" },
+        { from: "t-finance", to: "t-synth", kind: "down" },
+      ];
+      if (tMode === "reroute") {
+        E.push({ from: "tuhu-cond", to: "t-mna", kind: "dispatch", type: "dispatch" });
+        E.push({ from: "t-entry", to: "t-mna", kind: "flow-h", label: "收购 / 合资" });
+        E.push({ from: "t-mna", to: "t-finance", kind: "flow-h" });
+      }
+      return E.map((e) => ({ ...e, id: `${e.from}>${e.to}`, active: activeKey === `${e.from}>${e.to}` }));
+    }
     if (primaryMode === "distill") {
       E = [
         { from: "co", to: "conductor", kind: "down" },
@@ -136,7 +186,114 @@ function App() {
       E.push({ from: "comp", to: "report", kind: "flow-h" });
     }
     return E.map((e) => ({ ...e, id: `${e.from}>${e.to}`, active: activeKey === `${e.from}>${e.to}` }));
-  }, [flowMode, activeKey, primaryMode]);
+  }, [flowMode, activeKey, primaryMode, activeOrg, tMode]);
+
+  /* ============================================================
+     途虎 flagship orchestration (默认头牌场景)
+     ============================================================ */
+  const pushT = (m) => pushTo("tuhu", m);
+  async function tuhuRunNode(id, edge, task, result, cost, ms) {
+    setActiveKey(edge);
+    setNS(id, { status: "running", badge: null, task, startTs: Date.now(), progress: 84 });
+    await sleep(ms || 1600);
+    setNS(id, { status: "succeeded", task: null, result, dur: ((ms || 1600) / 1000).toFixed(1) + "s", cost, progress: 100 });
+    setActiveKey(null);
+  }
+
+  async function tuhuCreate() {
+    setBusy(true); setStatus("正在组建尽调军团…"); setSuggestions([]);
+    const tid = mid();
+    setThreads((t) => ({ ...t, tuhu: [...t.tuhu, { id: tid, role: "bot", kind: "thinking", steps: TUHU.flow.thinking }] }));
+    await sleep(3400);
+    removeMsg("tuhu", tid);
+    setTEmpty(false); setTEntered(true);
+    await sleep(60);
+    pushT({ role: "bot", text: TUHU.flow.builtMsg });
+    await sleep(520);
+    pushT({ role: "bot", kind: "team", data: { agents: TUHU.agents.filter((a) => !a.conditional).map((a) => ({ name: a.name, emoji: a.emoji, role: a.role, model: a.model.split("·")[1].trim(), mbti: a.mbti.code })) } });
+    await sleep(460);
+    pushT({ role: "bot", text: TUHU.flow.afterTeamMsg });
+    setSuggestions(TUHU.flow.suggestionsReady);
+    setStatus("组织已就绪");
+    finishBusy();
+  }
+
+  async function tuhuRun() {
+    setBusy(true); setStatus("尽调进行中…"); setSuggestions([]);
+    pushT({ role: "bot", text: TUHU.flow.runIntro });
+    await sleep(700);
+    await tuhuRunNode("t-market", "tuhu-cond>t-market", "Sizing US DIFM market · scanning Valvoline / Take 5 / AutoZone…", "US market mapped → us-market-landscape.md", "0.12", 1800);
+    await sleep(320);
+    // entry → awaits the chairman's call (drama)
+    setActiveKey("t-market>t-entry");
+    setNS("t-entry", { status: "running", task: "Scoring Build / Buy / JV / Franchise…", startTs: Date.now(), progress: 82 });
+    await sleep(1900);
+    setNS("t-entry", { status: "awaits", badge: "?", task: null, result: "Greenfield viable but capital- & time-heavy", dur: "1.9s", cost: "0.18", progress: 100 });
+    setActiveKey(null);
+    await sleep(480);
+    const aq = TUHU.flow.askQuestion;
+    pushT({ role: "bot", kind: "question", from: aq.from, id: mid(), text: aq.text, ctx: aq.ctx, quick: aq.quick });
+    setStatus("等待董事长决策"); setBusy(false);
+  }
+
+  async function tuhuAnswer(q) {
+    pushT({ role: "user", text: q.label });
+    setBusy(true); setStatus("尽调进行中…");
+    await sleep(500);
+    pushT({ role: "bot", text: TUHU.flow.acks[q.value] || TUHU.flow.acks.acquire });
+    const acquire = q.value === "acquire";
+    setNS("t-entry", { status: "succeeded", badge: null, task: null,
+      result: q.value === "greenfield" ? "Greenfield · single-metro pilot" : q.value === "franchise" ? "Franchise-light path" : "Acquire + JV path" });
+    if (acquire) { setTMode("reroute"); setNS("t-mna", { hidden: false, status: "idle" }); }
+    await sleep(520);
+    if (acquire) {
+      await tuhuRunNode("t-mna", "t-entry>t-mna", "Screening regional chains · structuring stake + JV…", "2 targets shortlisted → mna-jv-structuring.md", "0.16", 1700);
+      await sleep(340);
+    }
+    // parallel multi-stream diligence
+    const dil = [
+      { id: "t-legal", task: "Mapping 50-state licensing · labor · data law…", result: "Compliance matrix → compliance-matrix.md", cost: "0.15" },
+      { id: "t-ops", task: "Store conversion · supply chain · talent…", result: "Ops plan → localized-ops-plan.md", cost: "0.12" },
+      { id: "t-risk", task: "War-gaming tariffs · macro · response…", result: "Scenario matrix → risk-scenarios.md", cost: "0.14" },
+      { id: "t-brand", task: "Positioning · pricing · CAC…", result: "GTM plan → brand-gtm.md", cost: "0.11" },
+    ];
+    for (const d of dil) { setActiveKey("t-entry>" + d.id); setNS(d.id, { status: "running", task: d.task, startTs: Date.now(), progress: 83 }); }
+    await sleep(2300);
+    for (const d of dil) { setNS(d.id, { status: "succeeded", task: null, result: d.result, dur: "2.3s", cost: d.cost, progress: 100 }); }
+    setActiveKey(null);
+    await sleep(460);
+    await tuhuRunNode("t-finance", "t-legal>t-finance", "Allocating $10M across 3 years · building return model…", "$10M plan + returns → capital-plan-returns.md", "0.17", 1900);
+    await sleep(340);
+    await tuhuRunNode("t-synth", "t-finance>t-synth", "Synthesizing 8 streams into a board memo…", "Board memo delivered → Board-Strategy-Memo.html", "0.13", 1800);
+    await sleep(480);
+    pushT({ role: "bot", text: TUHU.flow.finalMsg });
+    await sleep(320);
+    pushT({ role: "bot", kind: "deliverable", items: TUHU.flow.deliverableItems });
+    await sleep(360);
+    pushT({ role: "bot", text: TUHU.flow.closingMsg });
+    setTDone(true);
+    setStatus("目标完成 · 组织空闲");
+    setSuggestions(TUHU.flow.closingSuggestions);
+    finishBusy();
+  }
+
+  function handleTuhu(text, action, files) {
+    if (action === "create" && tEmpty) { pushT({ role: "user", text, files }); tuhuCreate(); return; }
+    pushT({ role: "user", text, files });
+    if (action === "run") { tuhuRun(); return; }
+    if (action === "openBudget") { setView("costs"); setTimeout(() => pushT({ role: "bot", text: "已切到「预算」页 👈 上面是 $10M 三年的资本部署，下面是这套 AI 打法 vs 传统战略咨询的成本/时间对比。" }), 320); return; }
+    if (action === "chatFinance") { openAgentChat("t-finance"); return; }
+    tuhuGenericAck();
+  }
+
+  async function tuhuGenericAck() {
+    setBusy(true);
+    await sleep(520);
+    pushT({ role: "bot", text: tEmpty
+      ? "把目标交给我就行——点下面的「组建尽调组织」，或直接说「研究怎么打开美国市场」。"
+      : "收到，记进共享记忆了。您可以让我追问某个节点的产出、改路线，或直接说「启动」让组织开跑。" });
+    finishBusy();
+  }
 
   /* ---------- flows ---------- */
   async function runCreate(fileNote) {
@@ -333,7 +490,7 @@ function App() {
     setQueue((qs) => {
       if (qs.length) {
         setTimeout(() => {
-          push({ role: "bot", text: `对了，刚才你忙碌时发的「${qs[0]}」我也收到了，记在共享记忆里了，需要的话随时说。` });
+          pushTo(activeOrg, { role: "bot", text: `对了，刚才你忙碌时发的「${qs[0]}」我也收到了，记在共享记忆里了，需要的话随时说。` });
         }, 600);
       }
       return [];
@@ -348,7 +505,7 @@ function App() {
 
   function handleSend(text, suggestion, files) {
     // sample orgs: lightweight conversational ack only
-    if (activeOrg !== "primary") {
+    if (!isLive(activeOrg)) {
       pushTo(activeOrg, { role: "user", text, files });
       const org = activeOrg;
       setTimeout(() => pushTo(org, { role: "bot", text: files && files.length
@@ -357,11 +514,12 @@ function App() {
       return;
     }
     if (busyRef.current) {
-      push({ role: "user", text, queued: true, files });
+      pushTo(activeOrg, { role: "user", text, queued: true, files });
       setQueue((q) => [...q, text]);
       return;
     }
     const action = suggestion?.action || detect(text);
+    if (activeOrg === "tuhu") { handleTuhu(text, action, files); return; }
     const fileNote = attachNote(files);
     if (action === "authorize") { setAuthOpen(true); return; }
     if (action === "chatCollector") { openAgentChat("collector"); return; }
@@ -452,19 +610,31 @@ function App() {
   }
 
   function switchOrg(id) {
-    setActiveOrg(id); setView("canvas"); setSelectedId(null); setOrgMenuOpen(false);
+    setActiveOrg(id); setView("canvas"); setSelectedId(null); setOrgMenuOpen(false); setAgentChatId(null);
+    if (busyRef.current) return;
+    if (id === "tuhu") { setSuggestions(tEmpty ? TUHU.flow.suggestionsInit : tDone ? TUHU.flow.closingSuggestions : []); setStatus(tDone ? "目标完成 · 组织空闲" : "空闲 · 随时可聊"); }
+    else if (id === "primary") { setSuggestions(sceneEmpty ? SALARY_INIT_SUGG : []); setStatus("空闲 · 随时可聊"); }
+    else { setSuggestions([]); setStatus("只读示例组织"); }
   }
 
   /* ---------- active-org data ---------- */
   const primaryCreated = !sceneEmpty;
   const orgListItems = [
-    { id: "primary", name: primaryCreated ? CO.name : "新组织", emoji: CO.emoji, created: primaryCreated },
+    { id: "tuhu", name: TUHU.company.name, emoji: TUHU.company.emoji, created: !tEmpty },
+    { id: "primary", name: primaryCreated ? CO.name : "薪酬研究室", emoji: CO.emoji, created: primaryCreated },
     { id: "org-growth", name: ORGS.growth.name, emoji: ORGS.growth.emoji, created: true },
     { id: "org-content", name: ORGS.content.name, emoji: ORGS.content.emoji, created: true },
   ];
 
   let canvasNodes, canvasEdges, canvasEmpty, agentNodes, activeCompany;
-  if (activeOrg === "primary") {
+  if (activeOrg === "tuhu") {
+    const tn = tuhuNodes;
+    canvasNodes = showIdle ? tn : tn.map((n) => (n.kind === "agent" && n.status === "idle" ? { ...n, hidden: true } : n));
+    canvasEdges = edges;
+    canvasEmpty = tEmpty;
+    agentNodes = tn.filter((n) => n.kind === "agent" && !n.hidden);
+    activeCompany = { ...TUHU.company, created: !tEmpty };
+  } else if (activeOrg === "primary") {
     const offMode = (n) => (primaryMode === "distill" ? SALARY_IDS.includes(n.id) : DISTILL_IDS.includes(n.id));
     const masked = nodes.map((n) => (offMode(n) ? { ...n, hidden: true } : n));
     canvasNodes = showIdle ? masked : masked.map((n) => (n.kind === "agent" && n.status === "idle" ? { ...n, hidden: true } : n));
@@ -580,24 +750,24 @@ function App() {
               edges={canvasEdges}
               selectedId={selectedId}
               onSelectNode={setSelectedId}
-              entered={entered}
+              entered={activeOrg === "tuhu" ? tEntered : entered}
               sceneEmpty={canvasEmpty}
-              fitKey={`${activeOrg}:${primaryMode}`}
+              fitKey={`${activeOrg}:${primaryMode}:${tMode}`}
             />
           )}
           {view === "roster" && <RosterView agents={agentNodes} onSelect={setSelectedId} />}
-          {view === "costs" && <CostsView agents={agentNodes} companyName={activeCompany.name} />}
+          {view === "costs" && <CostsView agents={agentNodes} companyName={activeCompany.name} capitalPlan={activeOrg === "tuhu" ? TUHU.capitalPlan : null} />}
           <ConductorChat
             messages={messages}
-            busy={busy && activeOrg === "primary"}
+            busy={busy && isLive(activeOrg)}
             status={status}
-            suggestions={activeOrg === "primary" ? suggestions : []}
+            suggestions={isLive(activeOrg) ? suggestions : []}
             queueCount={queue.length}
             width={460}
             model={convModel}
             onModel={setConvModel}
             onSend={handleSend}
-            onQuick={answerQuestion}
+            onQuick={(q) => (activeOrg === "tuhu" ? tuhuAnswer(q) : answerQuestion(q))}
             onOpen={openDeliverable}
             onAuthorize={() => setAuthOpen(true)}
             grantedPath={grantedPath}

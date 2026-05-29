@@ -67,7 +67,7 @@ function RosterView({ agents, onSelect }) {
 }
 
 /* ---------- Costs / Monitoring ---------- */
-function CostsView({ agents, companyName }) {
+function CostsView({ agents, companyName, capitalPlan }) {
   const rows = agents.map((a) => ({ ...a, spend: estSpend(a) }));
   const total = rows.reduce((s, r) => s + r.spend, 0);
   const max = Math.max(0.01, ...rows.map((r) => r.spend));
@@ -79,6 +79,9 @@ function CostsView({ agents, companyName }) {
     byModel[k] = (byModel[k] || 0) + r.spend;
   }
   const running = rows.filter((r) => r.status === "running").length;
+  const cp = capitalPlan;
+  const cpMaxY = cp ? Math.max(...cp.years.map((y) => y.v)) : 0;
+  const cpMaxF = cp ? Math.max(...cp.funcs.map((f) => f.v)) : 0;
 
   return (
     <div className="view-pane">
@@ -87,11 +90,11 @@ function CostsView({ agents, companyName }) {
 
         <div className="cost-hero">
           <div className="ch-main">
-            <div className="ch-label mono">本轮累计花费</div>
+            <div className="ch-label mono">本轮累计花费（AI 算力）</div>
             <div className="ch-value mono">${total.toFixed(2)}</div>
             <div className="ch-budget">
               <div className="ch-track"><div className="ch-fill" style={{ width: `${Math.min(100, (total / budget) * 100)}%` }} /></div>
-              <div className="ch-budget-row mono"><span>预算 ${budget.toFixed(2)}</span><span>剩余 ${remain.toFixed(2)}</span></div>
+              <div className="ch-budget-row mono"><span>算力预算 ${budget.toFixed(2)}</span><span>剩余 ${remain.toFixed(2)}</span></div>
             </div>
           </div>
           <div className="ch-stats">
@@ -101,8 +104,48 @@ function CostsView({ agents, companyName }) {
           </div>
         </div>
 
+        {cp && (
+          <div className="compare-strip">
+            <div className="cmp-col">
+              <div className="cmp-tag mono">AI 作战室</div>
+              <div className="cmp-big mono">{cp.compare.warroomCost}</div>
+              <div className="cmp-sub">算力成本 · {cp.compare.warroomTime}</div>
+            </div>
+            <div className="cmp-vs mono">vs</div>
+            <div className="cmp-col muted">
+              <div className="cmp-tag mono">传统战略咨询</div>
+              <div className="cmp-big mono">{cp.compare.consultCost}</div>
+              <div className="cmp-sub">{cp.compare.consultTime}</div>
+            </div>
+          </div>
+        )}
+
+        {cp && (
+          <div className="cost-section">
+            <div className="cost-section-h mono">战略资本部署 · ${cp.total}M / 3 年（建议 · 示意）</div>
+            <div className="capital-years">
+              {cp.years.map((y) => (
+                <div className="cap-year" key={y.k}>
+                  <div className="cy-top"><span className="cy-k">{y.k}</span><span className="cy-v mono">${y.v}M</span></div>
+                  <div className="cy-track"><div className="cy-fill" style={{ width: `${(y.v / cpMaxY) * 100}%` }} /></div>
+                  <div className="cy-note mono">{y.note}</div>
+                </div>
+              ))}
+            </div>
+            <div className="capital-funcs">
+              {cp.funcs.map((f) => (
+                <div className="cap-func" key={f.k}>
+                  <span className="cf-k">{f.k}</span>
+                  <span className="cf-track"><span className="cf-fill" style={{ width: `${(f.v / cpMaxF) * 100}%` }} /></span>
+                  <span className="cf-v mono">${f.v.toFixed(1)}M</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         <div className="cost-section">
-          <div className="cost-section-h mono">按 AGENT 分布</div>
+          <div className="cost-section-h mono">按 AGENT 分布（算力）</div>
           {rows.map((r) => (
             <div className="cost-row" key={r.id}>
               <span className="cr-emoji">{r.emoji}</span>
