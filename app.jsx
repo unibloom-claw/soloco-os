@@ -222,13 +222,13 @@ function App() {
     setBusy(true); setStatus("尽调进行中…"); setSuggestions([]);
     pushT({ role: "bot", text: TUHU.flow.runIntro });
     await sleep(700);
-    await tuhuRunNode("t-market", "tuhu-cond>t-market", "Sizing US DIFM market · scanning Valvoline / Take 5 / AutoZone…", "US market mapped → us-market-landscape.md", "0.12", 1800);
+    await tuhuRunNode("t-market", "tuhu-cond>t-market", "Sizing US aftermarket · ranking DFW vs LA vs Phoenix…", "DFW-first recommended → us-market-geo.md", "0.12", 1800);
     await sleep(320);
     // entry → awaits the chairman's call (drama)
     setActiveKey("t-market>t-entry");
-    setNS("t-entry", { status: "running", task: "Scoring Build / Buy / JV / Franchise…", startTs: Date.now(), progress: 82 });
+    setNS("t-entry", { status: "running", task: "Scoring LA-DTC vs DFW staged hybrid vs B2B-first…", startTs: Date.now(), progress: 82 });
     await sleep(1900);
-    setNS("t-entry", { status: "awaits", badge: "?", task: null, result: "Greenfield viable but capital- & time-heavy", dur: "1.9s", cost: "0.18", progress: 100 });
+    setNS("t-entry", { status: "awaits", badge: "?", task: null, result: "Original LA-first DTC over-scoped for $10M", dur: "1.9s", cost: "0.18", progress: 100 });
     setActiveKey(null);
     await sleep(480);
     const aq = TUHU.flow.askQuestion;
@@ -240,31 +240,31 @@ function App() {
     pushT({ role: "user", text: q.label });
     setBusy(true); setStatus("尽调进行中…");
     await sleep(500);
-    pushT({ role: "bot", text: TUHU.flow.acks[q.value] || TUHU.flow.acks.acquire });
-    const acquire = q.value === "acquire";
+    pushT({ role: "bot", text: TUHU.flow.acks[q.value] || TUHU.flow.acks.staged });
+    const staged = q.value === "staged";
     setNS("t-entry", { status: "succeeded", badge: null, task: null,
-      result: q.value === "greenfield" ? "Greenfield · single-metro pilot" : q.value === "franchise" ? "Franchise-light path" : "Acquire + JV path" });
-    if (acquire) { setTMode("reroute"); setNS("t-mna", { hidden: false, status: "idle" }); }
+      result: q.value === "la_dtc" ? "LA-first DTC · flagged NO-GO @ $10M" : q.value === "b2b" ? "B2B supply-first · operating wedge" : "DFW staged hybrid · B2B-enabled DTC" });
+    if (staged) { setTMode("reroute"); setNS("t-mna", { hidden: false, status: "idle" }); }
     await sleep(520);
-    if (acquire) {
-      await tuhuRunNode("t-mna", "t-entry>t-mna", "Screening regional chains · structuring stake + JV…", "2 targets shortlisted → mna-jv-structuring.md", "0.16", 1700);
+    if (staged) {
+      await tuhuRunNode("t-mna", "t-entry>t-mna", "Validating China-tire landed cost · AD/CVD + Section 301…", "Price wedge at RED risk → trade-landed-cost.md", "0.16", 1700);
       await sleep(340);
     }
     // parallel multi-stream diligence
     const dil = [
-      { id: "t-legal", task: "Mapping 50-state licensing · labor · data law…", result: "Compliance matrix → compliance-matrix.md", cost: "0.15" },
-      { id: "t-ops", task: "Store conversion · supply chain · talent…", result: "Ops plan → localized-ops-plan.md", cost: "0.12" },
-      { id: "t-risk", task: "War-gaming tariffs · macro · response…", result: "Scenario matrix → risk-scenarios.md", cost: "0.14" },
-      { id: "t-brand", task: "Positioning · pricing · CAC…", result: "GTM plan → brand-gtm.md", cost: "0.11" },
+      { id: "t-legal", task: "FMVSS 139 · TIN · recall · BAR · Prop 65 · insurance…", result: "Compliance manageable; tariff is the blocker → compliance-supply.md", cost: "0.15" },
+      { id: "t-ops", task: "Benchmarking Tire Rack / SimpleTire / Discount Tire…", result: "Connector UX not differentiated → competition-installer.md", cost: "0.12" },
+      { id: "t-risk", task: "Setting kill-criteria · CAC + landed-cost sensitivity…", result: "9 kill-gates defined → risk-scenarios.md", cost: "0.14" },
+      { id: "t-brand", task: "Testing TUHU Direct vs neutral brand · trust levers…", result: "Lead with a neutral brand → brand-wedge.md", cost: "0.11" },
     ];
     for (const d of dil) { setActiveKey("t-entry>" + d.id); setNS(d.id, { status: "running", task: d.task, startTs: Date.now(), progress: 83 }); }
     await sleep(2300);
     for (const d of dil) { setNS(d.id, { status: "succeeded", task: null, result: d.result, dur: "2.3s", cost: d.cost, progress: 100 }); }
     setActiveKey(null);
     await sleep(460);
-    await tuhuRunNode("t-finance", "t-legal>t-finance", "Allocating $10M across 3 years · building return model…", "$10M plan + returns → capital-plan-returns.md", "0.17", 1900);
+    await tuhuRunNode("t-finance", "t-legal>t-finance", "Re-budgeting $10M as a compliance-gated pilot…", "$10M fits a narrowed staged pilot → budget-model.md", "0.17", 1900);
     await sleep(340);
-    await tuhuRunNode("t-synth", "t-finance>t-synth", "Synthesizing 8 streams into a board memo…", "Board memo delivered → Board-Strategy-Memo.html", "0.13", 1800);
+    await tuhuRunNode("t-synth", "t-finance>t-synth", "Synthesizing 5 workstreams → CONDITIONAL GO memo…", "Board memo delivered → Board-Strategy-Memo.html", "0.13", 1800);
     await sleep(480);
     pushT({ role: "bot", text: TUHU.flow.finalMsg });
     await sleep(320);
@@ -282,7 +282,7 @@ function App() {
     pushT({ role: "user", text, files });
     if (action === "run") { tuhuRun(); return; }
     if (action === "openBudget") { setView("costs"); setTimeout(() => pushT({ role: "bot", text: "已切到「预算」页 👈 上面是 $10M 三年的资本部署，下面是这套 AI 打法 vs 传统战略咨询的成本/时间对比。" }), 320); return; }
-    if (action === "chatFinance") { openAgentChat("t-finance"); return; }
+    if (action === "chatTrade") { openAgentChat("t-mna"); return; }
     tuhuGenericAck();
   }
 
