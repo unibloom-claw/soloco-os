@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Soloco: 商业化与 GTM 叙事</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-color: #0d1117;
+      --text-main: #c9d1d9;
+      --text-muted: #8b949e;
+      --heading-color: #e6edf3;
+      --accent: #e8a54b;
+      --border-color: #30363d;
+    }
+
+    body {
+      font-family: "Noto Sans SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      line-height: 1.7;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 4rem 2rem;
+    }
+
+    header {
+      margin-bottom: 4rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 2rem;
+    }
+
+    h1 {
+      color: var(--heading-color);
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+
+    .subtitle {
+      color: var(--accent);
+      font-size: 1.2rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+    }
+
+    .audience {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-top: 0.75rem;
+    }
+
+    section {
+      margin-bottom: 3.5rem;
+    }
+
+    h2 {
+      color: var(--heading-color);
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-top: 0;
+      margin-bottom: 1.2rem;
+      display: flex;
+      align-items: baseline;
+      gap: 0.75rem;
+    }
+
+    h2 .section-num {
+      color: var(--accent);
+      font-size: 1.1rem;
+      font-weight: 700;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    h3 {
+      color: var(--heading-color);
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-top: 2rem;
+      margin-bottom: 0.8rem;
+    }
+
+    p {
+      margin-top: 0;
+      margin-bottom: 1.2rem;
+      font-size: 1.05rem;
+    }
+
+    ul {
+      margin-top: 0;
+      margin-bottom: 1.5rem;
+      padding-left: 1.5rem;
+    }
+
+    li {
+      margin-bottom: 0.6rem;
+      font-size: 1.05rem;
+    }
+
+    strong {
+      color: var(--heading-color);
+      font-weight: 600;
+    }
+
+    .highlight {
+      color: var(--accent);
+    }
+
+    blockquote {
+      margin: 2rem 0;
+      padding: 1.5rem;
+      background: rgba(232, 165, 75, 0.05);
+      border-left: 4px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+    }
+
+    blockquote p:last-child {
+      margin-bottom: 0;
+    }
+
+    .qa {
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1.2rem 1.4rem;
+      margin-bottom: 1rem;
+    }
+
+    .qa .q {
+      color: var(--heading-color);
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .qa .a {
+      margin-bottom: 0;
+      color: var(--text-main);
+    }
+
+    .footer {
+      margin-top: 5rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border-color);
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Soloco 怎么赚钱</h1>
+      <div class="subtitle">商业化与 GTM 叙事 (Monetization &amp; Go-to-Market)</div>
+      <div class="audience">内部讨论稿 · 面向 CEO 与工程负责人 · 2026-06-02</div>
+    </header>
+
+    <main>
+      <section>
+        <h2><span class="section-num">01</span> The Frame</h2>
+        <p>先把最容易被质疑的那句话主动说出来，反而能让整场讨论站稳：</p>
+        <blockquote>
+          <p><strong>ToC 不是我们的收入，ToC 是我们的漏斗、护城河和研发实验室。</strong><br>真正的收入来自<span class="highlight">市场（Marketplace）</span>和 <span class="highlight">ToB</span>。我们应该照这个事实来排兵布阵——不要再指望那个讨人喜欢的免费产品来养活公司。</p>
+        </blockquote>
+        <p>承认这一点不是认输，而是把资源投在对的地方。免费的 ToC 产品要被当作获客和生态种子来衡量，而不是按 ARPU 考核。</p>
+      </section>
+
+      <section>
+        <h2><span class="section-num">02</span> The Position</h2>
+        <p>用户回答了一个看似简单、实则重新定义产品的问题：我们的目标用户是<strong>任何已经买了 Claude 或 Codex 订阅的人</strong>。</p>
+        <p>这意味着 Soloco 不是一个 agent 平台，而是<span class="highlight">用户已经付过钱的那份订阅之上的一层</span>。我们不转售 token，模型成本由用户自己承担。</p>
+        <blockquote>
+          <p>你已经在为一个天才付费。<br><strong>Soloco 把这个天才变成一家公司。</strong></p>
+        </blockquote>
+        <p>这是一个比"卖 agent 基础设施"强得多的站位：边际模型成本几乎为零，因此我们可以激进地免费、激进地病毒式增长——这是靠转售 token 赚钱的对手在结构上学不来的。</p>
+      </section>
+
+      <section>
+        <h2><span class="section-num">03</span> The Money Map</h2>
+        <p>三层结构，一套策略。</p>
+
+        <h3>第一层 · ToC（免费／低价）：漏斗</h3>
+        <p>自带订阅的 AI 组织。对我们几乎零成本（用户自带 token）。它的任务是<strong>获客 + 病毒传播 + 给市场播种</strong>。只做轻度变现：Pro 席位解锁记忆持久化、更高并发、跨模型组织、私有模板。</p>
+
+        <h3>第二层 · 市场 / CLIPHUB：可规模化的毛利</h3>
+        <p>创作者发布"组织模板"（尽调组织、内容工厂、融资材料组织……），用户 fork 或订阅，<strong>我们抽成</strong>。近乎零边际成本，网络效应增长：组织越多 → 价值越大 → 用户越多 → 创作者越多。这是 GitHub / Shopify 形态的生意。</p>
+
+        <h3>第三层 · ToB：真正的钱在这里</h3>
+        <p>把模板化的 AI 组织部署进真实公司，卖点是我们<span class="highlight">已经建好的东西</span>——治理、审计日志、预算硬上限、决策检查点、公司级数据隔离。高客单价，通过公司内部的 ToC 拥护者自下而上落地。</p>
+      </section>
+
+      <section>
+        <h2><span class="section-num">04</span> The Loop</h2>
+        <p>让这三层成为<strong>一套策略而非三门生意</strong>的，是它们互相喂养：</p>
+        <blockquote>
+          <p>免费 ToC 用户成为拥护者 → 他发布／fork 的模板暴露出哪类组织有真实需求 → 这些被验证的模板加上我们的治理能力，被卖回他所在的公司，成为 ToB 产品。</p>
+        </blockquote>
+        <p>免费用户就是 ToB 成交的 SDR。CLIPHUB 就是研发实验室。被 fork 一万次的模板，本身就是被需求验证过的 ToB 产品。</p>
+      </section>
+
+      <section>
+        <h2><span class="section-num">05</span> No Vertical Guessing</h2>
+        <p>这一点直接回应"我不想做垂直，外面有数据更强的人能把垂直做得更好"的顾虑：</p>
+        <p><strong>你永远不必猜垂直，市场会告诉你。</strong>我们在平台层保持水平，让需求把垂直经验性地浮现出来——而不是去赌一个垂直、再硬扛数据更强的在位者。</p>
+        <p>哪个组织模板被 fork 一万次，那个就是你被验证过的 ToB 产品。</p>
+      </section>
+
+      <section>
+        <h2><span class="section-num">06</span> For the CEO</h2>
+        <ul>
+          <li><strong>市场规模：</strong>每一个 Claude / Codex 订阅用户都是一次预付费的免费试用。纯自下而上的 PLG，我们不背 token 成本。</li>
+          <li><strong>防御性：</strong>护城河不是模型（正在快速商品化），而是<span class="highlight">组织可读性 + 复利记忆 + 市场网络效应</span>。它能扛过下一个模型的发布。</li>
+          <li><strong>可扩展性：</strong>市场抽成几乎零边际成本；ToB 客单价高。ToC 成本能压低，正因为用户自带 token。</li>
+          <li><strong>一句话定位：</strong>"我们不是一个 AI 应用，我们是 AI 组织的平台和市场——agent 经济的 Shopify / GitHub 层。"</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2><span class="section-num">07</span> For Engineering</h2>
+        <ul>
+          <li><strong>最贵的部分已经建好了。</strong>审计、预算硬上限、治理、检查点、公司级隔离——control-plane 不变量已经在仓库里。ToB 比看起来近得多，是加固，不是从零开始。</li>
+          <li><strong>我们刚砍掉了一整个 sprint。</strong>按新论点，旧 roadmap 的 S4（webhook 信号闭环 + 22 个 adapter）移出核心，省下约四分之一的工作量。</li>
+          <li><strong>市场是薄层，不是第二个引擎。</strong>CLIPHUB = 模板版本化 + 发布／fork + 发现，叠在 H1 本就会产出的模板之上。它是 H2，而且很小。</li>
+          <li><strong>要诚实标注的风险：</strong>自带订阅的并发上限、对 Claude Code 与 Codex CLI 的平台／ToS 依赖、以及记忆持久化是我们唯一真正承担的基础设施成本（token 不是，存储与检索是——这正是我们用 Pro 来收费的点）。</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2><span class="section-num">08</span> The Moat</h2>
+        <p>对每个人都会问的反对意见，提前给答案。</p>
+
+        <div class="qa">
+          <p class="q">CEO："ToC 免费，我们是不是在为一个未必出现的市场烧钱？"</p>
+          <p class="a">下行风险是有界的：ToC 基础设施便宜（自带 token），市场近乎零边际成本，唯一的真实开销（记忆）被 Pro 挡住。我们不像对手那样补贴 token。</p>
+        </div>
+        <div class="qa">
+          <p class="q">CEO："Anthropic / OpenAI 为什么不会自己做？"</p>
+          <p class="a">他们围绕单一模型垂直整合。一个<strong>跨模型</strong>、<strong>厂商中立</strong>的组织层加一个<strong>中立市场</strong>，既不符合他们的利益，也不在他们的路线图上。我们是瑞士。</p>
+        </div>
+        <div class="qa">
+          <p class="q">工程负责人："市场是另一个完整产品，会吃掉 H1。"</p>
+          <p class="a">不会。市场是 H2 且很薄。H1（涌现式 ToC 主循环）在做到无可辩驳之前，是唯一焦点。</p>
+        </div>
+        <div class="qa">
+          <p class="q">工程负责人："ToB 的多租户和安全很重。"</p>
+          <p class="a">那是 H3，而且最难的部分（隔离、审计、治理）已经存在。是集成 adapter + 租户加固，不是重写。</p>
+        </div>
+      </section>
+
+      <section>
+        <h2><span class="section-num">09</span> Concurrency as Upsell</h2>
+        <p>把自带订阅的并发约束，变成不靠转售 token 的增值阶梯：</p>
+        <ul>
+          <li>暴露一个<strong>"组织产能"仪表</strong>（底层已有 <code>goal-throttle-scheduler</code>）。单订阅 = 一个不大的组织，仪表诚实地显示出来。</li>
+          <li>让产能成为高级用户<strong>愿意买上去</strong>的东西：接上 Claude Max、再接 Codex、再加席位 → 一个肉眼可见更大、更快、跨模型的公司。<span class="highlight">"全都买，跑一家更大的公司。"</span></li>
+          <li>这给了一条原生于自带订阅、不需要 token 毛利的变现轴：产能／并发 + 跨模型解锁 = Pro。</li>
+        </ul>
+        <p>而且对并发的诚实本身就是信任——这和"可读的组织"整套论点完全契合。</p>
+      </section>
+
+      <section>
+        <h2><span class="section-num">10</span> The Ask</h2>
+        <p>这场会上，希望大家拍板的四件事：</p>
+        <ul>
+          <li><strong>承认 ToC 是漏斗、不是收入</strong>——用漏斗／市场播种／ToB 线索来考核它，而不是 ARPU。</li>
+          <li><strong>现在就投 H1</strong>（涌现式主循环 + 记忆），作为优先级 #1。</li>
+          <li><strong>把 CLIPHUB 定为 H2、薄范围</strong>——发布／fork／版本化 + 发现。</li>
+          <li><strong>为 H3 点名 1–2 个 ToB 共建客户</strong>——舅舅的牛羊肉进口集团是一个免费、愿意、且天然是跨境贸易场景的试点。用起来。</li>
+        </ul>
+        <blockquote>
+          <p>从转售算力，到<strong>出售组织能力</strong>。<br>
+          从一个免费应用，到<strong>一个平台 + 一个市场 + 一条 ToB 收入线</strong>。<br>
+          ToC 负责被爱，市场和 ToB 负责赚钱。</p>
+        </blockquote>
+      </section>
+    </main>
+
+    <footer class="footer">
+      &copy; 2026 Soloco · Earthborn Lab. 内部讨论稿.
+    </footer>
+  </div>
+</body>
+</html>
